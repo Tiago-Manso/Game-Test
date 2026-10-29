@@ -30,7 +30,7 @@ the existing specs (including shared ones like `specs/architecture.md`), and
 related issues. Build on decisions already made instead of asking again; ask
 only about the open questions this issue touches. Don't ask the user anything the
 repository already answers; state what you found instead ("Movement already
-uses `Input.ts`; I'll extend that").
+uses `scripts/input.gd`; I'll extend that").
 
 ## Step 3 - Interview
 
@@ -75,7 +75,7 @@ Ask for approval. Apply changes and show again until they say it's good.
    git fetch origin main
    git checkout main && git pull --ff-only origin main
    # write specs/<number>-<slug>.md
-   git add specs/
+   git add specs/ discussions/
    git commit -m "Spec #<number>: <title>"
    git push origin main
    ```
