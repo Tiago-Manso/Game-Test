@@ -75,3 +75,19 @@ An incremental / idle clicker shooter:
 - D-014 Blocks sit in fixed slots and respawn after a short delay.
 - D-015 Block HP and gold reward scale with the total number of blocks destroyed.
 - D-016 Numbers show as suffixes (K, M, B, T, then aa, ab, ...); a setting switches to scientific.
+
+# Round 5 - refining milestone 1 into issues
+
+| Question | Answer |
+|----------|--------|
+| Slots and respawn (Q-001, Q-002)? | **5 slots, 0.5 s.** |
+| Unit names (Q-003)? | **Pistol, Shotgun, Rocket.** |
+| Hit feedback (Q-004)? | **HP bar per block** only. |
+| Auto-save (Q-005)? | **Every 10 s + on pause/quit.** |
+| How the loop handles dependencies? | **All issues `ready`; loop waits on `Depends on #n`.** |
+| Growth curves? | **Exponential.** |
+| Notation toggle (Q-008)? | **Gear button on the HUD.** |
+| Number type and desktop window (Q-006, Q-007)? | **Accepted: `float` behind helpers; 540x960 resizable, mouse = tap.** |
+
+Decisions D-017 to D-026 recorded in `game-design.md`. Specs approved and
+issues #1-#9 created.
