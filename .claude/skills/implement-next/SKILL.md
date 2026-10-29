@@ -83,7 +83,8 @@ environment, if any).
 **Ambiguity gate.** If you cannot state the acceptance criteria as concrete,
 checkable items, or the spec contradicts the code or another spec, do not
 guess. Comment on the issue with numbered, specific questions; swap
-`in-progress` and `ready` for `needs-spec`; stop the run.
+`in-progress` and `ready` for `needs-spec`; stop the run. The user answers
+them with `/refine-issue #<number>`.
 
 ## Step 6 - Implement
 

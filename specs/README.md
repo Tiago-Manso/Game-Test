@@ -3,6 +3,12 @@
 Detailed specifications for work items. GitHub issues are the queue; specs hold
 the detail an implementer (human or the loop) needs.
 
+## Writing specs
+
+Run `/refine-issue <idea or #number>`: Claude interviews you, writes the spec,
+creates the issue and marks it `ready`. Approved specs are committed straight
+to `main`, since the loop only reads specs from there.
+
 ## Conventions
 
 - One file per issue: `specs/<issue-number>-<short-slug>.md`, e.g. `specs/12-player-movement.md`.
@@ -27,4 +33,4 @@ the detail an implementer (human or the loop) needs.
 - Open questions are resolved or removed.
 
 If the loop can't meet these, it labels the issue `needs-spec` and asks its
-questions on the issue.
+questions on the issue. Answer them with `/refine-issue #<number>`.
