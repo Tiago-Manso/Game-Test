@@ -17,8 +17,9 @@ damage blocks automatically. Abstract "shooting blocks" theme (D-006).
 Goal: prove the core loop is fun. In scope:
 
 ### Blocks
-- Several blocks on screen at once, in **fixed slots** (D-009, D-014).
-- A broken block is replaced in the same slot after a short delay (D-014).
+- **5** blocks on screen at once, in **fixed slots** (D-009, D-014, D-017).
+- A broken block is replaced in the same slot after **0.5 s** (D-014, D-018).
+- Each block shows an **HP bar**; no other hit effects yet (D-023).
 - Each block has HP; it breaks at 0 and pays gold.
 - HP and gold reward of new blocks scale with **total blocks destroyed** (D-015).
 
@@ -27,7 +28,7 @@ Goal: prove the core loop is fun. In scope:
 - Tap damage has a level that the player raises with gold (D-011).
 
 ### Team (auto-damage)
-- **3 unit types**, each costlier and stronger than the last (D-010).
+- **3 unit types** - Pistol, Shotgun, Rocket - each costlier and stronger than the last (D-010, D-019).
 - Each unit type has a level, bought with gold; cost grows each level and
   damage per second grows with level (D-011).
 - All units always shoot the block with the **lowest current HP** (D-013).
@@ -40,39 +41,42 @@ Goal: prove the core loop is fun. In scope:
   respawn delay) lives in config data, not in code (D-008).
 
 ### Saving
-- Progress auto-saves locally and loads on start (D-012).
+- Progress auto-saves locally every 10 s and on pause/quit, and loads on start (D-012, D-024).
 
 ### Not in milestone 1
 Levels and boss timers, prestige / Time Warp, active abilities, offline
 earnings, milestone multipliers, real art, sound, monetisation.
 
+## Decisions from refining milestone 1 (2026-10-29)
+
+- D-017 5 block slots (was Q-001).
+- D-018 Respawn delay 0.5 s (was Q-002).
+- D-019 Units are Pistol, Shotgun, Rocket (was Q-003).
+- D-020 Block HP, gold and upgrade costs grow exponentially (`base * growth^n`); damage per level grows linearly.
+- D-021 Numbers are plain `float` behind `NumberFormat` / `BalanceConfig`, swappable for a big-number type later (was Q-006).
+- D-022 Desktop: 540x960 resizable window; mouse click acts as tap (was Q-007).
+- D-023 Hit feedback in the prototype is an HP bar per block only - no damage numbers, flashes or break effects (was Q-004).
+- D-024 Auto-save every 10 s and on pause, focus-out and quit (was Q-005).
+- D-025 Settings live in a panel behind a gear button on the HUD; notation is its only option for now (was Q-008).
+- D-026 Milestone 1 is split into issues #1-#9, all labelled `ready`; the loop waits until an issue's `Depends on #n` issues are closed.
+
 ## Open questions
 
-- Q-001 How many block slots? (Proposal: 5.)
-- Q-002 Respawn delay? (Proposal: 0.5 s, in config.)
-- Q-003 Unit names and look (proposal: Pistol, Rifle, Cannon as placeholder names).
-- Q-004 Feedback on tap/hit/break: damage numbers, flash, shake? (Proposal: floating damage number + flash.)
-- Q-005 When to auto-save: on interval, on purchase, on quit? (Proposal: every 10 s and on quit/pause.)
-- Q-006 Number type: plain `float` reaches ~1e308, enough for the prototype; a
-  big-number type may be needed later. (Proposal: `float` now, behind one
-  formatting/maths helper so it can be swapped.)
-- Q-007 Desktop window size and input (mouse click = tap). (Proposal: 540x960 window, resizable, keeping aspect.)
-- Q-008 Where is the settings toggle for scientific notation? (Proposal: a small settings button on the HUD.)
+None for milestone 1.
 
-## Proposed issue breakdown for milestone 1
+## Milestone 1 issues
 
-Ready to spec once the open questions above are answered or the proposals accepted.
-Order is the build order; each should be one reviewable PR.
-
-1. **Project skeleton** - Godot project, portrait stretch settings, GUT vendored, main scene, one passing test.
-2. **Number formatting** - suffix and scientific formatting helper (pure logic).
-3. **Balance config** - one config resource with every tunable number and the scaling formulas.
-4. **Blocks and slots** - slots, block HP, break, respawn delay, scaling by blocks destroyed.
-5. **Tap damage and gold** - tapping damages a block; breaking pays gold; gold HUD.
-6. **Tap damage upgrade** - buy tap-damage levels.
-7. **Team units** - 3 unit types, buy/level up, DPS, lowest-HP targeting.
-8. **Save and load** - local auto-save and load on start.
-9. **Settings: number notation** - toggle between suffix and scientific.
+| # | Issue | Spec | Depends on |
+|---|-------|------|------------|
+| 1 | Project skeleton | `specs/1-project-skeleton.md` | - |
+| 2 | Number formatting | `specs/2-number-formatting.md` | #1 |
+| 3 | Balance config | `specs/3-balance-config.md` | #1 |
+| 4 | Blocks and slots | `specs/4-blocks-and-slots.md` | #3 |
+| 5 | Tap damage and gold | `specs/5-tap-damage-and-gold.md` | #2, #4 |
+| 6 | Tap damage upgrade | `specs/6-tap-damage-upgrade.md` | #5 |
+| 7 | Team units | `specs/7-team-units.md` | #5 |
+| 8 | Save and load | `specs/8-save-and-load.md` | #6, #7 |
+| 9 | Notation setting | `specs/9-notation-setting.md` | #8 |
 
 ## Later milestones (parked)
 
