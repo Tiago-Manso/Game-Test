@@ -63,7 +63,8 @@ running it orchestrates three agents from `.claude/agents/`:
 - Run continuously in a session: `/loop /implement-next` (or `/loop 30m /implement-next`).
 - Run on a schedule: a scheduled task whose prompt is `/implement-next`.
 
-To queue work: run `/refine-issue <idea or #number>` and refine it together
+Design discussions live in `discussions/` (`game-design.md` is the current
+state; dated files are session logs). To queue work: run `/refine-issue <idea or #number>` and refine it together
 with Claude. It interviews you, writes `specs/<n>-<slug>.md`, creates the issue
 and labels it `ready`. (By hand: write the spec from `specs/_template.md`, open
 an issue linking it, add `ready`.) The loop opens one PR per issue
@@ -72,7 +73,7 @@ an issue linking it, add `ready`.) The loop opens one PR per issue
 ## Conventions
 
 - Branches from the loop: `loop/issue-<n>-<slug>`. Code never goes straight to `main`.
-- Exception: `refine-issue` pushes spec-only commits (files under `specs/`) to
+- Exception: `refine-issue` pushes spec-only commits (files under `specs/` and `discussions/`) to
   `main` after the user approves the spec in the conversation.
 - Keep changes scoped to the issue; extra ideas become new issues.
 - Every acceptance criterion should be covered by a GUT test. Criteria that are

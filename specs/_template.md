@@ -28,4 +28,5 @@ Art/audio this needs: exported file paths (see `art/README.md`), or "placeholder
 
 ## Notes
 
-Links to related specs, references, sketches, open questions.
+Design decisions this implements (`D-###` from `discussions/game-design.md`),
+related specs, references, sketches.

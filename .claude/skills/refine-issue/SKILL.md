@@ -24,8 +24,11 @@ For a `needs-spec` issue, the loop's questions in the comments are your agenda.
 
 ## Step 2 - Do your homework before asking
 
-Read the relevant code, the existing specs (including shared ones like
-`specs/architecture.md`), and related issues. Don't ask the user anything the
+Read `discussions/game-design.md` (the agreed design, decisions `D-###`,
+open questions `Q-###`, and the proposed issue breakdown), the relevant code,
+the existing specs (including shared ones like `specs/architecture.md`), and
+related issues. Build on decisions already made instead of asking again; ask
+only about the open questions this issue touches. Don't ask the user anything the
 repository already answers; state what you found instead ("Movement already
 uses `Input.ts`; I'll extend that").
 
@@ -77,11 +80,14 @@ Ask for approval. Apply changes and show again until they say it's good.
    git push origin main
    ```
 
-   Commit nothing but files under `specs/` this way. If the push is rejected,
+   Commit nothing but files under `specs/` and `discussions/` this way. If the push is rejected,
    pull and retry; never force-push `main`.
 3. **Labels.** Remove `needs-spec` if present. Add `ready` unless it depends on
    an unmerged issue (say so to the user). Add `priority:high` if the user asked.
 4. For a `needs-spec` issue, comment that the questions are answered in the spec.
+5. If the interview settled open questions or changed decisions, record them in
+   `discussions/game-design.md` (new `D-###`, remove answered `Q-###`) and
+   commit it together with the spec.
 
 ## Step 6 - Wrap up
 
