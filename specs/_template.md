@@ -13,8 +13,14 @@ What must be built. Be specific about behaviour, inputs, outputs and edge cases.
 
 ## Acceptance criteria
 
-- [ ] <Concrete, checkable item - e.g. "pressing Space while grounded makes the player jump; covered by a test">
-- [ ] <...>
+<!-- Tag each item: [test] = covered by a GUT test, [manual] = visual/feel, checked by a human in the PR. -->
+
+- [ ] [test] <Concrete, checkable item - e.g. "pressing jump while on the floor sets velocity.y to -jump_speed">
+- [ ] [manual] <e.g. "the jump animation plays while airborne">
+
+## Assets
+
+Art/audio this needs: exported file paths (see `art/README.md`), or "placeholder OK".
 
 ## Out of scope
 

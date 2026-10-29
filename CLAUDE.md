@@ -2,16 +2,53 @@
 
 ## Project
 
-A game project. Stack not chosen yet - update this section once it is.
+A 2D game built with **Godot 4** (version pinned in `.godot-version`) and
+**GDScript**. Art and animation sources are made in **Blender** when needed.
+
+## Layout
+
+The Godot project lives at the repository root (`project.godot`).
+
+| Path               | Contents                                                        |
+|--------------------|-----------------------------------------------------------------|
+| `scenes/`          | `.tscn` scenes, grouped by feature (`scenes/player/`, ...)      |
+| `scripts/`         | `.gd` scripts not owned by a single scene                       |
+| `assets/`          | Imported game assets: `sprites/`, `audio/`, `fonts/`, `models/` |
+| `test/`            | GUT tests: `test/unit/`, `test/integration/`, files `test_*.gd` |
+| `addons/gut/`      | GUT test framework (vendored)                                   |
+| `art/`             | Blender `.blend` sources - ignored by Godot (`.gdignore`)       |
+| `specs/`           | Specs for issues                                                |
+| `tools/`           | Dev scripts                                                     |
 
 ## Commands
 
-<!-- Fill these in once the project has a stack. The implementation loop runs every one before opening a PR. -->
+The implementation loop runs install, import, lint and test before every PR.
 
-- Install: _TBD_
-- Build: _TBD_
-- Lint: _TBD_
-- Test: _TBD_
+- Install Godot + gdtoolkit: `tools/install-godot.sh`
+- Import (refresh `.godot/` cache, catches broken resources): `godot --headless --path . --import`
+- Lint: `gdlint scenes scripts test`
+- Format check: `gdformat --check scenes scripts test`
+- Test: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gexit`
+- Run the game: `godot --path .`
+
+If Godot can't be installed (e.g. network blocked), the loop must not open a
+PR on untested code: it marks the issue `blocked` and says why.
+
+## GDScript conventions
+
+- Static typing everywhere: `var speed: float = 200.0`, typed function signatures.
+- `snake_case` files, functions and variables; `PascalCase` for `class_name` and nodes.
+- One script per scene root where possible; prefer signals over reaching up the tree.
+- Tunable values as `@export` variables, not magic numbers.
+- Logic that can be tested without a scene goes in plain classes so GUT can test it directly.
+
+## Art pipeline (Blender)
+
+- Sources in `art/<name>.blend`; exports committed alongside (see `art/README.md`).
+- 2D: render to PNG sprite sheets in `assets/sprites/<name>/`, animate in Godot with
+  `AnimatedSprite2D` / `AnimationPlayer`.
+- The loop never needs Blender. If an issue needs new art, the spec names the
+  exported files; until they exist the loop uses placeholder sprites and says so in the PR.
 
 ## Autonomous implementation loop
 
@@ -33,4 +70,6 @@ an issue linking it, add `ready`.) The loop opens one PR per issue
 - Exception: `refine-issue` pushes spec-only commits (files under `specs/`) to
   `main` after the user approves the spec in the conversation.
 - Keep changes scoped to the issue; extra ideas become new issues.
-- Every acceptance criterion should be covered by a test where the stack allows.
+- Every acceptance criterion should be covered by a GUT test. Criteria that are
+  purely visual or feel-based are stated as such in the spec and checked by a human
+  in the PR.
