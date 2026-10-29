@@ -11,7 +11,13 @@ Spec: `specs/...`
 
 ## Code review (agent)
 
-Verdict, rounds, non-blocking notes left open.
+| Pass | Verdict | Blocking | Non-blocking | Fixed in |
+|------|---------|----------|--------------|----------|
+| 1    |         |          |              |          |
+| 2    |         |          |              |          |
+| 3    |         |          |              |          |
+
+Non-blocking notes left open:
 
 ## PO acceptance (agent)
 

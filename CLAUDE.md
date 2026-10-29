@@ -57,7 +57,7 @@ Work is queued as GitHub issues and specified in `specs/`. One iteration is the
 running it orchestrates three agents from `.claude/agents/`:
 
 1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion).
-2. `code-reviewer` - reviews code, tests and TDD history; loops with the implementer until it approves.
+2. `code-reviewer` - reviews code, tests and TDD history in 3 passes (a fresh reviewer each time), with the implementer fixing the findings after each pass.
 3. `product-owner` - checks every acceptance criterion; must accept before a PR is opened.
 
 - Run continuously in a session: `/loop /implement-next` (or `/loop 30m /implement-next`).

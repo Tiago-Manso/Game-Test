@@ -57,8 +57,9 @@ Adding a label that does not exist yet creates it; don't stop over a missing lab
 - One issue per run. One PR per issue. One branch per PR.
 - Never push to `main`, never merge a PR, never force-push a branch you didn't create in this loop.
 - Never skip, disable or delete a test to get green.
-- `MAX_REVIEW_ROUNDS = 3` (implementer <-> code reviewer) and
-  `MAX_PO_ROUNDS = 2` (PO rejections) per issue. Hitting either means **Failure**.
+- `REVIEW_PASSES = 3`: every issue gets exactly three code-review passes,
+  each followed by implementer fixes, before the PO sees it (Step 7).
+- `MAX_PO_ROUNDS = 2` PO rejections per issue; one more means **Failure**.
 
 ## Step 1 - Sync
 
@@ -80,7 +81,8 @@ If any PR has either, take the **first** one and check out its branch.
 
 - Large or design-level asks: reply with a proposal on the thread, don't change code.
 - Everything else: give the failure / comments to a new `implementer` (TDD
-  still applies), then run the **review loop** (Step 7). If the fix changes
+  still applies), then run **one** review pass on the new commits (as in
+  Step 7, pass 3 rules). If the fix changes
   behaviour covered by an acceptance criterion, also run the **PO gate**
   (Step 8).
 - Push, reply on each thread you handled with the commit that addressed it,
@@ -128,15 +130,30 @@ commit). It returns a TDD log, manual-check steps, check results and follow-ups.
 
 If it reports `STATUS: STUCK`, go to **Failure**.
 
-## Step 7 - Review loop (implementer <-> code reviewer)
+## Step 7 - Review passes (3 x code reviewer -> implementer fixes)
 
-1. Start a `code-reviewer` with: spec path, branch, issue number. It returns
-   `VERDICT: APPROVE` or `CHANGES_REQUESTED` with blocking (`B#`) and
-   non-blocking (`N#`) findings.
-2. `CHANGES_REQUESTED`: send the blocking findings (and any non-blocking ones
-   that are plainly right) to the **same** implementer via `SendMessage`. Then
-   send the **same** reviewer a re-review request listing the finding IDs.
-3. Repeat until `APPROVE`. More than `MAX_REVIEW_ROUNDS` rounds -> **Failure**.
+Run exactly `REVIEW_PASSES = 3` passes, even if an earlier pass approves - each
+pass is a fresh pair of eyes. For pass `k` = 1, 2, 3:
+
+1. **Review.** Start a **new** `code-reviewer` (fresh context, so it isn't
+   anchored on earlier passes) with: spec path, branch, issue number, the pass
+   number, and - from pass 2 on - the previous passes' findings with the
+   implementer's "Findings addressed" notes, so it verifies those fixes as
+   well as reviewing the whole branch again. It returns `VERDICT: APPROVE` or
+   `CHANGES_REQUESTED` with blocking (`B#`) and non-blocking (`N#`) findings.
+2. **Fix.** Send the **same** implementer (via `SendMessage`) every blocking
+   finding and the non-blocking ones that are plainly right. Prefix IDs with
+   the pass (`P1-B2`). It fixes them (TDD for behaviour changes) and reports
+   what it changed. If the pass had no findings to act on, skip this.
+
+After pass 3:
+
+- If pass 3 had blocking findings, send the pass-3 reviewer (`SendMessage`)
+  the implementer's fixes to verify. All resolved and checks green ->
+  continue. Anything still open -> **Failure**.
+- If pass 3 approved, continue.
+
+Record each pass's verdict and finding counts for the PR body.
 
 ## Step 8 - PO gate (product owner)
 
@@ -149,7 +166,8 @@ final verdict.
   branch (no PR), comment the PO's reasons on the issue as numbered questions,
   swap `in-progress` and `ready` for `needs-spec`, stop the run.
 - `REJECT` otherwise -> send the reasons to the **same** implementer, then
-  run Step 7 again (re-review the new commits), then return to this step with
+  run **one** more review pass on the new commits (fresh `code-reviewer`,
+  pass-3 rules: open findings after its fixes -> **Failure**), then return to this step with
   the **same** PO via `SendMessage`. More than `MAX_PO_ROUNDS` rejections ->
   **Failure**.
 

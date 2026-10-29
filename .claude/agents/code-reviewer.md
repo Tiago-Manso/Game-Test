@@ -62,6 +62,11 @@ VERDICT: APPROVE | CHANGES_REQUESTED
 - <red sha>: failed on "<assertion>" as expected | PROBLEM: <what>
 ```
 
-`APPROVE` only when the blocking list is empty and all checks pass. When asked
-to re-review, verify each earlier finding is fixed (say which) and review the
-new commits.
+`APPROVE` only when the blocking list is empty and all checks pass.
+
+The loop runs three review passes, each by a fresh reviewer. If you are pass 2
+or 3 you get the earlier passes' findings and the implementer's fixes: list
+each one as fixed / not fixed under `## Earlier findings`, then review the
+**whole** branch again - don't limit yourself to the new commits, and don't
+assume earlier passes caught everything. When asked to verify fixes to your
+own findings, check each one and say which are resolved.
