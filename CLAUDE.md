@@ -53,7 +53,12 @@ PR on untested code: it marks the issue `blocked` and says why.
 ## Autonomous implementation loop
 
 Work is queued as GitHub issues and specified in `specs/`. One iteration is the
-`implement-next` skill (`.claude/skills/implement-next/SKILL.md`).
+`implement-next` skill (`.claude/skills/implement-next/SKILL.md`). The session
+running it orchestrates three agents from `.claude/agents/`:
+
+1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion).
+2. `code-reviewer` - reviews code, tests and TDD history; loops with the implementer until it approves.
+3. `product-owner` - checks every acceptance criterion; must accept before a PR is opened.
 
 - Run continuously in a session: `/loop /implement-next` (or `/loop 30m /implement-next`).
 - Run on a schedule: a scheduled task whose prompt is `/implement-next`.

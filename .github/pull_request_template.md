@@ -4,9 +4,23 @@ Closes #
 
 Spec: `specs/...`
 
-## Acceptance criteria
+## TDD log
 
-- [ ] Criterion - how it is verified
+| Criterion | Red commit | Failure seen | Green commit |
+|-----------|------------|--------------|--------------|
+
+## Code review (agent)
+
+Verdict, rounds, non-blocking notes left open.
+
+## PO acceptance (agent)
+
+| # | Criterion | Verdict | Evidence |
+|---|-----------|---------|----------|
+
+### For the human reviewer
+
+Manual checks to try in the running game.
 
 ## Checks run
 
