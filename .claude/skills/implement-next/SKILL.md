@@ -97,7 +97,16 @@ If the number of open `autoloop` PRs is `>= MAX_OPEN_PRS`, report
 
 List open issues labelled `ready` and **not** labelled `in-progress`,
 `blocked`, or `needs-spec`. Order: `priority:high` first, then lowest issue
-number. Take the first one. If there are none, report "backlog empty" and stop.
+number.
+
+**Dependencies.** An issue body may contain lines `Depends on #<n>` (one per
+line, or `Depends on #<a> and #<b>`). Skip the issue while any issue it
+depends on is still open - it unlocks once those PRs are merged and their
+issues closed. Don't comment on or relabel skipped issues.
+
+Take the first issue that isn't skipped. If none is left, report
+"backlog empty" (no `ready` issues) or "waiting on dependencies" (every
+`ready` issue waits on an open one - list which) and stop.
 
 Claim it immediately: add `in-progress`, and comment
 `Picked up by the implementation loop.` (plus the footer required by your
