@@ -100,6 +100,27 @@ func test_unit_dps_at_level_0_is_0_for_any_unit() -> void:
 		assert_eq(_config.unit_dps(unit, 0), 0.0, "%s dps at level 0" % unit.id)
 
 
+func test_changing_instance_values_changes_every_formula() -> void:
+	var config: BalanceConfig = BalanceConfig.new()
+	config.block_base_hp = 2.0
+	config.block_hp_growth = 3.0
+	config.block_base_gold = 5.0
+	config.block_gold_growth = 2.0
+	config.tap_base_damage = 7.0
+	config.tap_base_cost = 4.0
+	config.tap_cost_growth = 3.0
+	var unit: UnitConfig = UnitConfig.new()
+	unit.base_cost = 6.0
+	unit.cost_growth = 2.0
+	unit.base_dps = 9.0
+	assert_eq(config.block_hp(2), 18.0, "block_hp uses block_base_hp and block_hp_growth")
+	assert_eq(config.block_gold(3), 40.0, "block_gold uses block_base_gold and block_gold_growth")
+	assert_eq(config.tap_damage(3), 21.0, "tap_damage uses tap_base_damage")
+	assert_eq(config.tap_upgrade_cost(3), 36.0, "tap_upgrade_cost uses tap_base_cost and growth")
+	assert_eq(config.unit_dps(unit, 2), 18.0, "unit_dps uses the unit's base_dps")
+	assert_eq(config.unit_cost(unit, 3), 48.0, "unit_cost uses the unit's base_cost and growth")
+
+
 func _assert_close(actual: float, expected: float, label: String) -> void:
 	assert_almost_eq(actual, expected, absf(expected) * RELATIVE_TOLERANCE, label)
 
