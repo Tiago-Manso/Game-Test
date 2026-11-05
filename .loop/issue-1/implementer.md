@@ -10,8 +10,8 @@ Branch: loop/issue-1-project-skeleton
 ## [test] criteria
 | # | Criterion | Status | Red | Green | Refactor |
 |---|-----------|--------|-----|-------|----------|
-| 1 | test_project_settings.gd: viewport, stretch, aspect, orientation, emulate touch, main scene | green | c48cf6f | (this commit) | - |
-| 2 | test_main_scene.gd: root is Control named Main | todo | - | - | - |
+| 1 | test_project_settings.gd: viewport, stretch, aspect, orientation, emulate touch, main scene | green (no refactor needed) | c48cf6f | 4dff6df | - |
+| 2 | test_main_scene.gd: root is Control named Main | red | (this commit) | - | - |
 | 3 | import, lint, format check, test commands exit 0 | todo | - | - | - |
 
 ## Manual criteria
@@ -22,6 +22,9 @@ Branch: loop/issue-1-project-skeleton
 
 ## Red 1 failures seen
 - viewport_width [1152] expected [540]; height [648] expected [960]; stretch mode ["disabled"]; aspect ["keep"]; orientation [0] expected [1]; emulate touch false; main scene [""]. Resizable passes already (Godot default true) - kept as a guard for the requirement.
+
+## Red 2 failure seen
+- Expected [<null>] to be anything but NULL: main scene loads as a PackedScene (plus GUT 'Unexpected Errors' from load of the missing file).
 
 ## Last checks
 - import: exit 0 (setup)
