@@ -10,7 +10,7 @@ Branch: loop/issue-2-number-formatting
 | 3 | Suffix sequence boundaries (T, aa, ab, ba) | green | 704388b (input fixed in 95b09cb) | 174f9d7 |
 | 4 | Scientific examples produce the exact strings | green | 3bdc999 | e8e2c4b |
 | 5 | Negative, INF and NAN cases | green | 568064c | d260575 |
-| 6 | No mantissa >= 1000 from 1e3 to 1e300 | red | (this commit) | - |
+| 6 | No mantissa >= 1000 from 1e3 to 1e300 | green | a3328de | (this commit) |
 
 ## Findings
 None yet.

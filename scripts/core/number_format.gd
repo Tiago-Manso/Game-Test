@@ -20,7 +20,7 @@ static func format(value: float, notation: Notation = Notation.SUFFIX) -> String
 	if value < 1000.0:
 		return str(int(floor(value)))
 	var exponent: int = _decimal_exponent(value)
-	var digits: String = str(int(floor(value / pow(10.0, exponent - 2))))
+	var digits: String = str(_leading_digits(value, exponent))
 	if notation == Notation.SCIENTIFIC:
 		return digits.substr(0, 1) + "." + digits.substr(1) + "e" + str(exponent)
 	var group: int = exponent / 3
@@ -39,6 +39,13 @@ static func _decimal_exponent(value: float) -> int:
 	elif value < pow(10.0, exponent):
 		exponent -= 1
 	return exponent
+
+
+## The first 3 digits of value, truncated. 10^exponent <= value < 10^(exponent + 1),
+## so they lie in 100..999; the clamp undoes float error in the division.
+static func _leading_digits(value: float, exponent: int) -> int:
+	var digits: int = int(floor(value / pow(10.0, exponent - 2)))
+	return clampi(digits, 100, 999)
 
 
 ## Suffix for 1000^group: K, M, B, T, then aa, ab, ... az, ba, ... zz.
