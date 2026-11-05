@@ -17,8 +17,10 @@ const DEFAULT_PATH: String = "res://data/balance.tres"
 @export var units: Array[UnitConfig] = []
 
 
+## A fresh copy of data/balance.tres, units included. The loader cache is bypassed
+## so changing one caller's config never changes another's (A-04).
 static func load_default() -> BalanceConfig:
-	return load(DEFAULT_PATH) as BalanceConfig
+	return ResourceLoader.load(DEFAULT_PATH, "", ResourceLoader.CACHE_MODE_IGNORE) as BalanceConfig
 
 
 ## HP of the block spawned after `n` blocks have been destroyed.

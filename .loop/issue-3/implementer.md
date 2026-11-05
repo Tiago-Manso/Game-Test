@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 Issue: #3 Balance config   Attempt: 1/2
 Branch: loop/issue-3-balance-config
 
@@ -15,7 +15,7 @@ Branch: loop/issue-3-balance-config
 Round 1: fixing Q1-I1 (important). Minors Q1-m1, S1-m1, S1-m2, T1-m1 logged as tech debt, not fixed.
 | ID | Severity | Status | Commit | Notes |
 |----|----------|--------|--------|-------|
-| Q1-I1 | important | red | (this commit) | load_default() returned the ResourceLoader-cached instance shared by every caller. |
+| Q1-I1 | important | fixed | red 42148f7, fix (this commit) | load_default() returned the ResourceLoader-cached instance shared by every caller. |
 
 ## Last checks
 Baseline (before any change): import 0, lint 0, format 0, tests exit 0 (19/19, 4212 asserts).
@@ -32,3 +32,4 @@ Criterion 5 green: linear search over units by id. Tests exit 0 (32/32, 4283 ass
 Refactor: the load_default tests use the before_each config instead of loading it again. Tests exit 0 (32/32, 4283 asserts), import 0, lint 0, format 0.
 Spec set to in-review, all five [test] criteria ticked (docs commit). Final checks: import exit 0, lint exit 0, format check exit 0, tests exit 0 (32/32, 4283 asserts).
 Q1-I1 red: new test "load_default returns an independent copy each time" fails: "[99.0] expected to equal [0.5]: respawn_delay from the file", "[77.0] expected to equal [1.0]: pistol base_dps from the file", same object for config and unit. The mutation also leaks into the later test_unit_dps test ("[77.0] expected to equal [1.0] pistol dps(1)"), which shows the shared-state bug itself. Lint 0, format 0.
+Q1-I1 fix: load_default() uses ResourceLoader.load(DEFAULT_PATH, "", CACHE_MODE_IGNORE), so each call returns a new config with new unit sub-resources. No earlier fixes to recheck (first finding). Checks: import exit 0, lint exit 0, format check exit 0, tests exit 0 (33/33, 4287 asserts).
