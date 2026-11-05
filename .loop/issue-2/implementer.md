@@ -16,8 +16,8 @@ Branch: loop/issue-2-number-formatting
 Round 1 (tests reviewer). Fixing T1-C1, T1-I1, T1-I2; minors T1-m1, T1-m2, Q1-m1..m3 logged, not fixed.
 | ID | Severity | Status | Commit | Notes |
 |----|----------|--------|--------|-------|
-| T1-C1 | critical | fixed | (this commit) | Truncation cases added (suffix 1239, 1999, 12399, 199999; scientific 1239, 1999). Pass immediately on current code; verified they fail with the floori->roundi mutation (6 asserts). |
-| T1-I1 | important | todo | - | |
+| T1-C1 | critical | fixed | 1e8d2a3 | Truncation cases added (suffix 1239, 1999, 12399, 199999; scientific 1239, 1999). Pass immediately on current code; verified they fail with the floori->roundi mutation (6 asserts). |
+| T1-I1 | important | fixed | (this commit) | Added 1e9 -> 1.00B, 10^90 -> 1.00az, 10^96 -> 1.00bb, 10^300 -> 1.00dr. They pass on the current code and fail with B->G and second-letter mutations. Suggested input 1e15 * pow(1000.0, 27) is one ulp below 10^96 (rightly 999ba), so the large inputs use pow(10.0, k). The 1.00ba input moved to the same form; it is the same float. |
 | T1-I2 | important | todo | - | |
 
 ## Last checks

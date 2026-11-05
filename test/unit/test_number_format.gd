@@ -24,12 +24,17 @@ func test_suffix_digits_are_truncated_never_rounded_up() -> void:
 
 
 func test_suffix_sequence_is_right_at_its_boundaries() -> void:
+	assert_eq(NumberFormat.format(1e9), "1.00B")
 	assert_eq(NumberFormat.format(1e12), "1.00T")
 	assert_eq(NumberFormat.format(1e15), "1.00aa")
 	assert_eq(NumberFormat.format(1e18), "1.00ab")
-	# The 27th two-letter suffix, after az. Computed as the spec writes it: the
-	# GDScript literal 1e93 parses one ulp below 10^93, which truly is 999az.
-	assert_eq(NumberFormat.format(1e15 * pow(1000.0, 26)), "1.00ba")
+	# Large powers come from pow(), which gives the float nearest the power. The
+	# literal 1e93 and the product 1e15 * pow(1000.0, 27) both land one ulp below
+	# their power, and truncating those rightly gives 999az and 999ba.
+	assert_eq(NumberFormat.format(pow(10.0, 15 + 3 * 25)), "1.00az")
+	assert_eq(NumberFormat.format(pow(10.0, 15 + 3 * 26)), "1.00ba")
+	assert_eq(NumberFormat.format(pow(10.0, 15 + 3 * 27)), "1.00bb")
+	assert_eq(NumberFormat.format(pow(10.0, 300)), "1.00dr")
 
 
 func test_scientific_examples_produce_exact_strings() -> void:
