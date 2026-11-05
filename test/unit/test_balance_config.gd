@@ -86,6 +86,20 @@ func test_unit_cost_grows_exponentially_from_the_defaults() -> void:
 	_assert_close(_config.unit_cost(units[2], 10), 2367.36367459, "rocket cost(10)")
 
 
+func test_tap_damage_at_level_1_is_1() -> void:
+	assert_eq(_config.tap_damage(1), 1.0)
+
+
+func test_unit_dps_at_level_0_is_0_for_any_unit() -> void:
+	var units: Array[UnitConfig] = _config.units.duplicate()
+	var custom: UnitConfig = UnitConfig.new()
+	custom.id = &"custom"
+	custom.base_dps = 123.0
+	units.append(custom)
+	for unit: UnitConfig in units:
+		assert_eq(_config.unit_dps(unit, 0), 0.0, "%s dps at level 0" % unit.id)
+
+
 func _assert_close(actual: float, expected: float, label: String) -> void:
 	assert_almost_eq(actual, expected, absf(expected) * RELATIVE_TOLERANCE, label)
 
