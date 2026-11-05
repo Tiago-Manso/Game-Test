@@ -12,24 +12,23 @@ func before_each() -> void:
 
 
 func test_load_default_values_match_the_spec_table() -> void:
-	var config: BalanceConfig = BalanceConfig.load_default()
-	assert_not_null(config, "default config loads")
-	if config == null:
+	assert_not_null(_config, "default config loads")
+	if _config == null:
 		return
-	assert_eq(config.slot_count, 5)
-	assert_eq(config.respawn_delay, 0.5)
-	assert_eq(config.autosave_interval, 10.0)
-	assert_eq(config.block_base_hp, 10.0)
-	assert_eq(config.block_hp_growth, 1.05)
-	assert_eq(config.block_base_gold, 1.0)
-	assert_eq(config.block_gold_growth, 1.045)
-	assert_eq(config.tap_base_damage, 1.0)
-	assert_eq(config.tap_base_cost, 5.0)
-	assert_eq(config.tap_cost_growth, 1.07)
+	assert_eq(_config.slot_count, 5)
+	assert_eq(_config.respawn_delay, 0.5)
+	assert_eq(_config.autosave_interval, 10.0)
+	assert_eq(_config.block_base_hp, 10.0)
+	assert_eq(_config.block_hp_growth, 1.05)
+	assert_eq(_config.block_base_gold, 1.0)
+	assert_eq(_config.block_gold_growth, 1.045)
+	assert_eq(_config.tap_base_damage, 1.0)
+	assert_eq(_config.tap_base_cost, 5.0)
+	assert_eq(_config.tap_cost_growth, 1.07)
 
 
 func test_load_default_has_pistol_shotgun_rocket_in_order() -> void:
-	var units: Array[UnitConfig] = BalanceConfig.load_default().units
+	var units: Array[UnitConfig] = _config.units
 	assert_eq(units.size(), 3, "three units")
 	if units.size() != 3:
 		return

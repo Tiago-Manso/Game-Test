@@ -5,11 +5,11 @@ Branch: loop/issue-3-balance-config
 ## Criteria
 | # | Criterion | Status | Red | Green |
 |---|-----------|--------|-----|-------|
-| 1 | load_default() values match the table, units Pistol, Shotgun, Rocket in order | green | 9290bc2 | (this commit) |
-| 2 | Each formula at n/level 0, 1, 10 with default values | green | 6451499 | (this commit) |
-| 3 | tap_damage(1) = 1, unit_dps(any, 0) = 0 | green (no red possible) | - | (this commit, test only) |
-| 4 | Changing a value on an instance changes the formula result | green (no red possible) | - | (this commit, test only) |
-| 5 | unit_by_id(&"shotgun") returns Shotgun; unknown id returns null | green | 3d2e850 | (this commit) |
+| 1 | load_default() values match the table, units Pistol, Shotgun, Rocket in order | refactored | 9290bc2 | 88aa8ae |
+| 2 | Each formula at n/level 0, 1, 10 with default values | refactored | 6451499 | 54ba622 |
+| 3 | tap_damage(1) = 1, unit_dps(any, 0) = 0 | refactored (no red possible) | - | 6d83380 (test only) |
+| 4 | Changing a value on an instance changes the formula result | refactored (no red possible) | - | e62e1c7 (test only) |
+| 5 | unit_by_id(&"shotgun") returns Shotgun; unknown id returns null | refactored | 3d2e850 | d2c21d4 |
 
 ## Findings
 None yet.
@@ -26,3 +26,4 @@ Criterion 3: passes on first run - criterion 2's green formulas already satisfy 
 Criterion 4: passes on first run - criterion 2's formulas already read every field. Verified by mutation: replacing each field in the six formulas with its default literal makes all six asserts fail (e.g. "[2.205] expected to equal [18.0] block_hp uses block_base_hp and block_hp_growth"), then restored. Tests exit 0 (30/30, 4280 asserts), lint 0, format 0.
 Criterion 5 red: "Expected [<null>] to be anything but NULL: shotgun found". Red commit adds a unit_by_id stub returning null (so the unknown-id half already passes; the shotgun half is the red). Lint 0, format 0.
 Criterion 5 green: linear search over units by id. Tests exit 0 (32/32, 4283 asserts), import 0, lint 0, format 0.
+Refactor: the load_default tests use the before_each config instead of loading it again. Tests exit 0 (32/32, 4283 asserts), import 0, lint 0, format 0.
