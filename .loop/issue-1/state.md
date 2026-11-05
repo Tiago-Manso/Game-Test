@@ -1,12 +1,12 @@
 Status: in progress
 Issue: #1 Project skeleton   Attempt: 1/2
 Branch: loop/issue-1-project-skeleton   PR: #15
-Stage: review-round-2
+Stage: general-review-1
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
-- [ ] specialist reviews
+- [x] specialist reviews (2 rounds, 0 blocking)
 - [ ] general review
 - [ ] PO go / no-go
 - [ ] merged
@@ -14,10 +14,10 @@ Stage: review-round-2
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |
 |-------------|--------|-------------------|------|
-| quality     | 1      | 0                 | no   |
-| security    | 1      | 0                 | no   |
-| tests       | 1      | 0                 | no   |
-| performance | 1      | 0                 | no   |
+| quality     | 2      | 0                 | yes  |
+| security    | 2      | 0                 | yes  |
+| tests       | 2      | 0                 | yes  |
+| performance | 2      | 0                 | yes  |
 
 ## Agent runs
 | # | Agent    | Round | Started (UTC)    | Status  | Log             |
@@ -27,10 +27,11 @@ Stage: review-round-2
 | 3 | security | 1 | 2026-11-05 17:00 | done | security-r1.md |
 | 4 | tests | 1 | 2026-11-05 17:00 | done | tests-r1.md |
 | 5 | performance | 1 | 2026-11-05 17:00 | done | performance-r1.md |
-| 6 | quality | 2 | 2026-11-05 17:10 | started | quality-r2.md |
-| 7 | security | 2 | 2026-11-05 17:10 | started | security-r2.md |
-| 8 | tests | 2 | 2026-11-05 17:10 | started | tests-r2.md |
-| 9 | performance | 2 | 2026-11-05 17:10 | started | performance-r2.md |
+| 6 | quality | 2 | 2026-11-05 17:10 | done | quality-r2.md |
+| 7 | security | 2 | 2026-11-05 17:10 | done | security-r2.md |
+| 8 | tests | 2 | 2026-11-05 17:10 | done | tests-r2.md |
+| 9 | performance | 2 | 2026-11-05 17:10 | done | performance-r2.md |
+| 10 | general | 1 | 2026-11-05 17:20 | started | general-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
