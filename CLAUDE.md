@@ -91,7 +91,8 @@ an issue linking it, add `ready`.) The loop opens and merges one PR per issue
 ## Conventions
 
 - Branches from the loop: `loop/issue-<n>-<slug>`. Code never goes straight to
-  `main`; it is merged from a loop PR (merge commit) after the PO accepts.
+  `main`; it is squash-merged from a loop PR after the PO says GO. TDD applies to
+  how code is written and is checked in review, not to `main`'s history.
 - Exception: `refine-issue` pushes spec-only commits (files under `specs/` and `discussions/`) to
   `main` after the user approves the spec in the conversation.
 - Keep changes scoped to the issue; extra ideas become new issues.
