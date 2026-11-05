@@ -1,7 +1,9 @@
 class_name NumberFormat
 ## Formats game numbers for display (spec #2, D-016).
 
-const SUFFIXES: Array[String] = ["", "K", "M"]
+## Suffixes for the first powers of 1000; after them come two letters: aa, ab, ... zz.
+const NAMED_SUFFIXES: Array[String] = ["", "K", "M", "B", "T"]
+const LETTER_COUNT: int = 26
 
 
 static func format(value: float) -> String:
@@ -14,7 +16,7 @@ static func format(value: float) -> String:
 	var mantissa: String = digits.substr(0, integer_digits)
 	if integer_digits < 3:
 		mantissa += "." + digits.substr(integer_digits)
-	return mantissa + SUFFIXES[group]
+	return mantissa + _suffix(group)
 
 
 ## Power of ten of the leading digit; log() alone can land one off at exact powers.
@@ -25,3 +27,13 @@ static func _decimal_exponent(value: float) -> int:
 	elif value < pow(10.0, exponent):
 		exponent -= 1
 	return exponent
+
+
+## Suffix for 1000^group: K, M, B, T, then aa, ab, ... az, ba, ... zz.
+static func _suffix(group: int) -> String:
+	if group < NAMED_SUFFIXES.size():
+		return NAMED_SUFFIXES[group]
+	var index: int = group - NAMED_SUFFIXES.size()
+	var first: String = char("a".unicode_at(0) + index / LETTER_COUNT)
+	var second: String = char("a".unicode_at(0) + index % LETTER_COUNT)
+	return first + second
