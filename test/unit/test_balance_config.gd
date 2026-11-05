@@ -37,6 +37,18 @@ func test_load_default_has_pistol_shotgun_rocket_in_order() -> void:
 	_assert_unit(units[2], &"rocket", "Rocket", 1000.0, 1.09, 60.0)
 
 
+## Each caller gets its own copy: changing one, units included, leaves the next untouched.
+func test_load_default_returns_an_independent_copy_each_time() -> void:
+	var first: BalanceConfig = BalanceConfig.load_default()
+	first.respawn_delay = 99.0
+	first.units[0].base_dps = 77.0
+	var second: BalanceConfig = BalanceConfig.load_default()
+	assert_ne(second, first, "a different config object")
+	assert_ne(second.units[0], first.units[0], "a different unit object")
+	assert_eq(second.respawn_delay, 0.5, "respawn_delay from the file")
+	assert_eq(second.units[0].base_dps, 1.0, "pistol base_dps from the file")
+
+
 func test_block_hp_grows_exponentially_from_the_defaults() -> void:
 	_assert_close(_config.block_hp(0), 10.0, "block_hp(0)")
 	_assert_close(_config.block_hp(1), 10.5, "block_hp(1)")
