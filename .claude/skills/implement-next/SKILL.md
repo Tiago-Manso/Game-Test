@@ -121,8 +121,10 @@ deferred. All Minors - and any deferred Importants - are grouped into one
   and grouped into a `tech-debt` issue at merge.
 - Never push to `main` directly. Code reaches `main` only by merging a loop PR
   after the PO's **GO** with all checks green.
-- Merge with a **merge commit** (not squash or rebase) so the red/green/refactor
-  history and the `.loop/` logs stay on `main`.
+- **Squash-merge.** TDD is how the code is written and is verified during
+  review (the test reviewer checks the red/green commits on the PR); `main`
+  gets one commit per issue. The PR keeps the full commit history, and the
+  `.loop/` logs land on `main` with the squash.
 - Never skip, disable or delete a test to get green. Never force-push.
 
 ## Posting to the PR
@@ -327,9 +329,9 @@ Only after the PO's **GO**:
    the final TDD log, a table of review rounds per agent (rounds, Critical /
    Important fixed, deferred, Minor logged) and the tech-debt issue link. Commit, push.
 4. Mark the PR ready for review (no longer draft), post
-   `**Orchestrator:** merging - PO GO, checks green.`, and merge it with a
-   merge commit (`merge_pull_request`, method `merge`). `Closes #<number>`
-   closes the issue; issues that depend on it unlock.
+   `**Orchestrator:** merging - PO GO, checks green.`, and squash-merge it
+   (`merge_pull_request`, method `squash`, title `<issue title> (#<number>)`).
+   `Closes #<number>` closes the issue; issues that depend on it unlock.
 5. Delete the branch. Stop the run.
 
 ## Failure
