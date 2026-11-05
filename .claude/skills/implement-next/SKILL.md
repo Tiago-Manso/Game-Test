@@ -1,6 +1,6 @@
 ---
 name: implement-next
-description: Run one iteration of the autonomous implementation loop - resume an unfinished loop PR, otherwise pick the next `ready` GitHub issue, implement it with TDD (implementer agent), review it in the pull request (3 code-reviewer passes, then a product-owner gate) and merge it. Use when asked to "implement the next issue", "run the loop", or via `/loop /implement-next` or a scheduled task.
+description: Run one iteration of the autonomous implementation loop - resume an interrupted issue from its state logs, otherwise pick the next `ready` GitHub issue, implement it with TDD, review it in the pull request (quality, security, tests and performance reviewers until no major issues remain, then an Opus general review and an Opus product-owner go/no-go) and merge it. Use when asked to "implement the next issue", "run the loop", or via `/loop /implement-next` or a scheduled task.
 ---
 
 # implement-next: one iteration of the autonomous loop
@@ -8,38 +8,53 @@ description: Run one iteration of the autonomous implementation loop - resume an
 Each run takes **one issue from `ready` to merged** (or to a clean stop) and
 then ends. Repetition comes from outside: `/loop /implement-next` in a session,
 or a scheduled task whose prompt is `/implement-next`. Never start a second
-issue in the same run.
+issue in the same run, and never run two loops at once.
 
 The loop runs **without a human**. The only thing that ever waits for the user
 is spec refinement: an issue labelled `needs-spec`, which they answer with
-`/refine-issue #<n>`. Everything else - review, acceptance, merge, retries -
+`/refine-issue #<n>`. Everything else - review, go/no-go, merge, retries -
 happens inside the loop, and every review is posted **in the pull request** so
 the user can read the whole discussion afterwards.
 
 Work items are GitHub issues in this repository. Details live in `specs/`.
-Read `CLAUDE.md` first for build/test commands and conventions.
+Read `CLAUDE.md` first for build/test commands and conventions, then
+`.claude/loop/state-log.md` (log files) and `.claude/loop/reviewer-guide.md`
+(how reviews work).
 
 ## Roles
 
 You, running this skill, are the **orchestrator**: you handle git, GitHub,
-labels, posting to the PR, and the hand-offs. You do **not** write production
-code or tests yourself. Three subagents (defined in `.claude/agents/`) do the
+labels, the state log, posting to the PR, and the hand-offs. You do **not**
+write production code or tests yourself. Agents from `.claude/agents/` do the
 work, started with the Agent tool:
 
-| Agent           | `subagent_type`  | Job                                                    |
-|-----------------|------------------|--------------------------------------------------------|
-| Implementer     | `implementer`    | Writes tests and code with strict TDD; fixes findings. |
-| Code reviewer   | `code-reviewer`  | Independent review of code, tests and TDD. Read-only.  |
-| Product owner   | `product-owner`  | Accepts or rejects against the spec. Gate before merge. Read-only. |
+| Agent                 | `subagent_type`        | Model   | Job |
+|-----------------------|------------------------|---------|-----|
+| Implementer           | `implementer`          | default | Writes tests and code with strict TDD; fixes major findings. |
+| Quality reviewer      | `quality-reviewer`     | default | Correctness, design, readability, conventions, scope, lint. |
+| Security reviewer     | `security-reviewer`    | default | Untrusted input, save files, paths, code execution, secrets, dependencies. |
+| Test reviewer         | `test-reviewer`        | default | Tests prove the spec, make sense, aren't flaky; TDD really happened. |
+| Performance reviewer  | `performance-reviewer` | default | Per-frame cost, allocations, leaks, rendering, IO on mobile. |
+| General reviewer      | `general-reviewer`     | **opus** | Holistic review after the specialists converge. |
+| Product owner         | `product-owner`        | **opus** | GO / NO-GO against the spec. Final gate before merge. |
 
-Run them in the foreground (`run_in_background: false`), one at a time - they
-share the working tree. Keep the implementer's ID and send it every round of
-fixes with `SendMessage` so it keeps its context. Pass each agent everything
-it needs in its prompt (issue number, title, body and comments, spec path,
-branch, PR number); it has no other context. Never pass the reviewer or PO
-your own opinion of the code - give them the branch and let them judge. If
-`SendMessage` is unavailable, start a fresh agent of the same type and include
-its previous report plus the new findings in the prompt.
+Always pass `model: "opus"` when starting the general reviewer and the
+product owner (their definitions also pin it).
+
+- The implementer runs alone in the foreground - it changes the working tree.
+  Keep its ID and send each round of fixes with `SendMessage` so it keeps its
+  context.
+- The four specialist reviewers of a round run **in parallel**: start them in
+  one message (several Agent calls, `run_in_background: false`). They are
+  read-only and run Godot only in their own worktrees.
+- Every review agent is **fresh** each round, so it isn't anchored on its
+  earlier opinion; it gets the earlier rounds' findings and replies instead.
+- Pass each agent everything it needs in its prompt: issue number, title,
+  body and comments, spec path, branch, PR number, round, its log path, and
+  (from round 2) earlier findings with the implementer's replies. Never pass
+  your own opinion of the code.
+- If `SendMessage` is unavailable, start a fresh implementer and tell it to
+  resume from its log plus the new findings.
 
 The agents don't talk to GitHub. **You post what they return**, keeping their
 substance, under a heading naming the agent (see "Posting to the PR").
@@ -48,29 +63,49 @@ Use the GitHub MCP tools (`mcp__github__*`) for all GitHub operations. If they
 are unavailable, fall back to `gh`. If neither works, it is an
 **environment problem** (see Failure).
 
+## State logs
+
+Every agent keeps a log under `.loop/issue-<n>/` on the issue's branch (format
+in `.claude/loop/state-log.md`). You keep `state.md`:
+
+- Before starting an agent: add its row to "Agent runs" as `started`, commit
+  `state.md`, push.
+- After it returns: mark the row `done`, record its findings (major and
+  minor) in "Findings", update the stage, commit `state.md` **and the agent's
+  log** (review agents don't commit their own), push.
+- Push after every change, so a new session can always pick up from the
+  branch alone.
+
 ## Labels
 
-| Label           | Meaning                                                        |
-|-----------------|----------------------------------------------------------------|
-| `ready`         | Issue is fully specified; the loop may pick it up.             |
-| `in-progress`   | Claimed by a loop run. Other runs skip it.                     |
-| `retry`         | The first attempt failed; the next run tries once more from scratch. |
-| `needs-spec`    | Waiting for the user to refine the spec. The only human step.  |
-| `autoloop`      | Set on every PR the loop opens.                                |
-| `priority:high` | Picked before other `ready` issues.                            |
+| Label            | Meaning                                                        |
+|------------------|----------------------------------------------------------------|
+| `ready`          | Issue is fully specified; the loop may pick it up.             |
+| `in-progress`    | Claimed by a loop run. Only a resume (Step 2) touches it.      |
+| `retry`          | The first attempt failed; the next run tries once more from scratch. |
+| `needs-spec`     | Waiting for the user to refine the spec. The only human step.  |
+| `autoloop`       | Set on every PR the loop opens.                                |
+| `minor-findings` | Follow-up issue listing minor review findings from a merged PR. Not `ready`; refine it when you want it built. |
+| `priority:high`  | Picked before other `ready` issues.                            |
 
 Adding a label that does not exist yet creates it; don't stop over a missing label.
 
 ## Limits
 
-- One issue in flight at a time: at most one open `autoloop` PR.
-- `REVIEW_PASSES = 3`: every PR gets exactly three code-review passes, each
-  followed by implementer fixes, before the PO sees it.
-- `MAX_PO_ROUNDS = 2` PO rejections per attempt; a third is a failed attempt.
+- One issue in flight at a time.
+- Specialist reviewers: each runs **at least `MIN_REVIEW_ROUNDS = 2`** rounds
+  and keeps running until its latest round has **no major findings**. A
+  specialist still reporting majors in round `MAX_REVIEW_ROUNDS = 4` fails the attempt.
+- General review: repeats until a round has no majors; a major still open in
+  round `MAX_GENERAL_ROUNDS = 3` fails the attempt.
+- Product owner: `MAX_NO_GO = 2`; a third NO-GO fails the attempt.
 - `MAX_ATTEMPTS = 2` per issue; the second failed attempt sends the issue to `needs-spec`.
+- Minor findings are never fixed in the PR that found them: they are logged in
+  `state.md`, posted on the PR, and collected into a `minor-findings` issue at merge.
 - Never push to `main` directly. Code reaches `main` only by merging a loop PR
-  after the PO's `ACCEPT` with all checks green.
-- Merge with a **merge commit** (not squash or rebase) so the red/green/refactor history stays on `main`.
+  after the PO's **GO** with all checks green.
+- Merge with a **merge commit** (not squash or rebase) so the red/green/refactor
+  history and the `.loop/` logs stay on `main`.
 - Never skip, disable or delete a test to get green. Never force-push.
 
 ## Posting to the PR
@@ -79,33 +114,25 @@ All comments are posted from the same GitHub account, so each one starts with
 a bold heading saying who is speaking, and ends with the footer your
 environment requires (if any). GitHub doesn't let an account approve or
 request changes on its own PR, so every review is submitted with event
-`COMMENT`; the verdict is written in the heading.
+`COMMENT`; the verdict is in the heading.
 
-- **Code review** - one PR review per pass:
+- **Each review agent's round** is one PR review:
   - create a pending review (`pull_request_review_write`, method `create`);
   - add each finding that has a `file:line` in the diff as an inline comment
-    (`add_comment_to_pending_review`), text `**[P<k>-B<n>] blocking** - ...` or
-    `**[P<k>-N<n>] non-blocking** - ...`;
+    (`add_comment_to_pending_review`): `**[S2-M1] major** - ...` or
+    `**[S2-m3] minor (logged for later)** - ...`;
   - submit (`submit_pending`, event `COMMENT`) with the body
-    `**Code review - pass <k>/3 (code-reviewer agent): APPROVE | CHANGES REQUESTED**`,
-    then the checks it ran, the TDD spot-check, the earlier findings it
-    verified, and any finding without a diff line.
-- **Implementer fixes** - reply on each finding's thread
-  (`add_reply_to_pull_request_comment`), heading `**Implementer:**`, saying
-  `Fixed in <sha>: <what changed>` or `Not changed: <reason>`. Resolve the
-  thread (`resolve_review_thread`) when fixed. Findings that were in the review
-  body get one PR comment listing them the same way.
-- **Pass-3 verification** - a PR comment
-  `**Code review - pass 3 verification (code-reviewer agent): RESOLVED | OPEN**`
-  listing each finding.
-- **PO gate** - a PR review (event `COMMENT`) with body
-  `**Product owner (product-owner agent): ACCEPT | REJECT**`, the acceptance
-  table, rejection reasons (inline where they point at code), and manual checks.
-- **Stage marker** - end each loop comment with a hidden marker
-  `<!-- loop:stage=<stage> -->`, where stage is one of `implemented`,
-  `review-1`, `fixes-1`, `review-2`, `fixes-2`, `review-3`, `fixes-3`,
-  `verified`, `po-1`, `po-fixes-1`, `po-2`, ..., `accepted`. Step 2 uses these
-  to resume an interrupted run.
+    `**<Security> review - round <k> (<security-reviewer> agent): <n> major, <m> minor**`
+    (or `NO MAJOR ISSUES`), what it ran, the earlier findings it verified, and
+    findings without a diff line.
+- **Implementer fixes** - reply on each major finding's thread
+  (`add_reply_to_pull_request_comment`) with `**Implementer:** Fixed in <sha>:
+  <what changed>` or `**Implementer:** Not changed: <reason>`, and resolve the
+  thread (`resolve_review_thread`) when fixed. Findings from a review body get
+  one PR comment listing them the same way.
+- **Product owner** - a PR review with body
+  `**Product owner (product-owner agent, Opus): GO | NO-GO**`, the acceptance
+  table, NO-GO reasons (inline where they point at code), and manual checks.
 
 ## Step 1 - Sync
 
@@ -116,20 +143,28 @@ git checkout main && git pull --ff-only origin main
 
 If `main` doesn't exist, use the repository's default branch.
 
-## Step 2 - Resume an unfinished PR
+## Step 2 - Resume an interrupted issue
 
-If an open PR labelled `autoloop` exists (a run was interrupted, or the user
-commented on it), take it:
+Look for unfinished work, in this order:
 
-1. Check out its branch and merge `origin/main` into it if it is behind.
-2. Find the last `loop:stage` marker in its comments and reviews and continue
-   from the step after it (no marker -> start at Step 7, pass 1). Start a fresh
-   implementer, giving it the PR's findings and replies so far.
-3. Comments from the user that have no loop reply yet are **blocking findings**
-   for the next fixes round: the implementer handles them like reviewer
-   findings and you reply on their threads.
+1. an open PR labelled `autoloop`;
+2. an open issue labelled `in-progress` (a run died, possibly before the PR
+   was opened) - find its branch `loop/issue-<n>-*` on the remote.
 
-Then continue with the normal steps from there; skip Steps 3-6.
+If there is one, check out its branch, merge `origin/main` into it if it is
+behind, and read `.loop/issue-<n>/state.md`:
+
+- Continue from the stage it records. An agent run marked `started` but not
+  `done` was interrupted: start a fresh agent of the same type (same round,
+  same log path) and tell it to resume from its log.
+- If there is no `state.md` but a branch exists, treat it as Step 6 with an
+  implementer told to resume from `git log` and `implementer.md`.
+- If no branch exists, remove `in-progress` and go on to Step 3.
+- Comments from the user on the PR that have no loop reply yet are **major
+  findings** for the next fixes round: record them in `state.md` (ID
+  `U-M<n>`), have the implementer handle them, and reply on their threads.
+
+Then carry on with the normal steps from there; skip Steps 3-5.
 
 ## Step 3 - Pick an issue
 
@@ -147,9 +182,19 @@ Take the first issue that isn't skipped. If none is left, report
 
 ## Step 4 - Claim
 
-Add `in-progress` and comment `Picked up by the implementation loop
-(attempt <a>/2).` For an issue labelled `retry`, `a` is 2: read the failure
-comment from attempt 1 and pass it to the implementer.
+Create the branch and the state log, then claim:
+
+```bash
+git checkout -b loop/issue-<number>-<short-slug> origin/main
+```
+
+(On attempt 2 add `-2` to the branch name; the attempt-1 branch stays as it was.)
+
+Write `.loop/issue-<n>/state.md` (stage `claimed`, attempt 1 or 2), commit
+`loop(#<n>): claim, attempt <a>`, push. Add `in-progress` to the issue and
+comment `Picked up by the implementation loop (attempt <a>/2). Branch:
+<branch>.` For an issue labelled `retry`, `a` is 2: read the failure comment
+from attempt 1 and pass it to the implementer.
 
 ## Step 5 - Understand the task
 
@@ -162,100 +207,113 @@ comment from attempt 1 and pass it to the implementer.
 **Ambiguity gate.** If you cannot state the acceptance criteria as concrete,
 checkable items, or the spec contradicts the code or another spec, do not
 guess. Comment on the issue with numbered, specific questions; swap
-`in-progress`, `ready` and `retry` for `needs-spec`; stop the run. The user
-answers them with `/refine-issue #<number>`.
+`in-progress`, `ready` and `retry` for `needs-spec`; record it in `state.md`;
+stop the run. The user answers them with `/refine-issue #<number>`.
 
 ## Step 6 - Implement (TDD) and open the PR
 
-```bash
-git checkout -b loop/issue-<number>-<short-slug> origin/main
-```
-
-(On attempt 2 add `-2` to the branch name; the attempt-1 branch stays as it was.)
-
 Start an `implementer` with: issue number, title, body and comments, spec
-path, branch name (and the attempt-1 failure, if any). It works criterion by
-criterion: failing test (`[red]` commit), minimum code to pass (`[green]`
-commit), refactor (`[refactor]` commit). It returns a TDD log, manual-check
-steps, check results and follow-ups. If it reports `STATUS: STUCK`, go to
-**Failure**.
+path, branch name, its log path (and the attempt-1 failure, if any). It works
+criterion by criterion - failing test (`[red]` commit), minimum code to pass
+(`[green]` commit), refactor (`[refactor]` commit) - keeping
+`implementer.md` and pushing after every commit. It returns a TDD log,
+manual-check steps, check results and follow-ups. If it reports
+`STATUS: STUCK`, go to **Failure**.
 
-Push and open a **draft** PR against `main`:
+Run every check from `CLAUDE.md` yourself. Then open a **draft** PR against `main`:
 
 - Title: `<issue title> (#<number>)`
 - Body: follow `.github/pull_request_template.md`: `Closes #<number>`, spec
   path, the TDD log, checks run, manual checks, follow-ups.
 - Label: `autoloop`.
 
-Post a PR comment `**Implementer:** ready for review.` with the
-`implemented` marker.
+Record the PR number and stage `implemented` in `state.md`, push, and post
+`**Implementer:** ready for review.` on the PR.
 
-## Step 7 - Review passes in the PR (3 x code reviewer -> implementer fixes)
+## Step 7 - Specialist review rounds
 
-Run exactly `REVIEW_PASSES = 3` passes, even if an earlier pass approves - each
-pass is a fresh pair of eyes. For pass `k` = 1, 2, 3:
+Specialists: `quality-reviewer`, `security-reviewer`, `test-reviewer`,
+`performance-reviewer`. A specialist is **done** once it has run at least
+`MIN_REVIEW_ROUNDS` (2) rounds and its latest round found no major issues.
 
-1. **Review.** Start a **new** `code-reviewer` with: spec path, branch, issue
-   number, PR number, pass number, and - from pass 2 on - the previous passes'
-   findings with the implementer's replies, so it verifies those fixes as well
-   as reviewing the whole branch again. Post its result as the pass-`k` review
-   (marker `review-<k>`).
-2. **Fix.** Send the **same** implementer every blocking finding and the
-   non-blocking ones that are plainly right, with their `P<k>-` IDs. It fixes
-   them (TDD for behaviour changes) and reports per finding. Push, then post
-   the replies and resolve fixed threads (marker `fixes-<k>`). If the pass had
-   no findings to act on, post `**Implementer:** nothing to fix in pass <k>.`
+Repeat for round `k` = 1, 2, ... while any specialist isn't done:
 
-After pass 3:
+1. **Review.** Mark a run `started` in `state.md` for every specialist not yet
+   done, push, then start them **in parallel**, each fresh, with its log path
+   `.loop/issue-<n>/<quality|security|tests|performance>-r<k>.md`.
+2. **Record and post.** When all have returned, record their findings in
+   `state.md` (majors as `open`, minors as `logged` and in "Minor findings"),
+   commit their logs, push, and post one PR review per specialist.
+3. **Fix.** If the round has major findings, send them all to the
+   implementer (same agent) in one message. It fixes them (TDD for behaviour
+   changes), updates its log, pushes, and reports per finding. Mark them
+   `fixed` / `not changed` in `state.md`, push, reply on the threads and
+   resolve the fixed ones.
+4. A specialist with major findings in round `MAX_REVIEW_ROUNDS` (4) ->
+   **Failure**.
 
-- If pass 3 had blocking findings, send the pass-3 reviewer (`SendMessage`)
-  the implementer's fixes to verify and post its answer as the pass-3
-  verification (marker `verified`). Anything still open -> **Failure**.
-- If pass 3 approved, post the verification as `RESOLVED` with nothing open.
+Done specialists don't run again. The general review catches anything later
+fixes break in their area.
 
-## Step 8 - PO gate in the PR
+## Step 8 - General review (Opus)
 
-Start a `product-owner` with: issue title, body and comments, spec path,
-branch, PR number, the TDD log and manual-check steps, and the three review
-verdicts. Post its result as the PO review (marker `po-<round>`).
+Repeat for round `g` = 1, 2, ...:
 
-- `ACCEPT` -> Step 9.
-- `REJECT` with `[SPEC]` reasons -> the spec is wrong, not the code. Close the
+1. Start a fresh `general-reviewer` with `model: "opus"`, log
+   `.loop/issue-<n>/general-r<g>.md`, the spec, the PR discussion so far and
+   the path to `state.md`.
+2. Record, commit, push and post its review as in Step 7.
+3. No major findings -> Step 9. Otherwise the implementer fixes them as in
+   Step 7 and the next round starts. A major still open in round
+   `MAX_GENERAL_ROUNDS` (3) -> **Failure**.
+
+## Step 9 - Product owner go / no-go (Opus)
+
+Start a `product-owner` with `model: "opus"`, log `.loop/issue-<n>/po-r<r>.md`,
+and: issue title, body and comments, spec path, branch, PR number, the TDD log
+and manual-check steps. Record, commit, push and post its review.
+
+- **GO** -> Step 10.
+- **NO-GO** with `[SPEC]` reasons -> the spec is wrong, not the code. Close the
   PR with a comment pointing to the issue, comment the PO's reasons on the
   issue as numbered questions, swap `in-progress`, `ready` and `retry` for
-  `needs-spec`, stop the run. (After refinement the issue is picked up fresh.)
-- `REJECT` otherwise -> send the reasons to the **same** implementer; post its
-  replies (marker `po-fixes-<round>`); run **one** more review pass on the new
-  commits (fresh `code-reviewer`, posted as `pass 3+<round>`, pass-3 rules:
-  open findings after its fixes -> **Failure**); then ask the **same** PO again
-  via `SendMessage`. A third rejection -> **Failure**.
+  `needs-spec`, record it in `state.md`, push, stop the run.
+- **NO-GO** otherwise -> the implementer fixes the reasons, then **one**
+  general review round (Step 8 rules: majors must reach zero), then a fresh
+  `product-owner` round `r+1`. A third NO-GO -> **Failure**.
 
-## Step 9 - Merge
+## Step 10 - Merge
 
-Only after the PO's `ACCEPT`:
+Only after the PO's **GO**:
 
 1. Merge `origin/main` into the branch if it moved; run every check from
-   `CLAUDE.md` yourself. Anything red -> back to the implementer for a fix and
-   one more review pass, as in a PO rejection.
-2. Update the PR body with the final TDD log and a table of the review passes
-   (verdict, blocking/non-blocking counts, fixing commits).
-3. Mark the PR ready for review (no longer draft), post
-   `**Orchestrator:** merging - PO accepted, checks green.` (marker `accepted`),
-   and merge it with a merge commit (`merge_pull_request`, method `merge`).
-   `Closes #<number>` closes the issue; issues that depend on it unlock.
-4. Delete the branch. Stop the run.
+   `CLAUDE.md` yourself. Anything red -> the implementer fixes it, then one
+   general review round and the PO again, as for a NO-GO.
+2. If minor findings were logged, open one issue
+   `Minor findings from #<n>: <issue title>` labelled `minor-findings` (not
+   `ready`), listing each with its ID, reviewer, `file:line` and text, and
+   linking the PR. Record its number in `state.md`.
+3. Set `state.md` to `Status: done`, stage `merged`; update the PR body with
+   the final TDD log, a table of review rounds per agent (rounds, majors,
+   minors) and the minor-findings issue link. Commit, push.
+4. Mark the PR ready for review (no longer draft), post
+   `**Orchestrator:** merging - PO GO, checks green.`, and merge it with a
+   merge commit (`merge_pull_request`, method `merge`). `Closes #<number>`
+   closes the issue; issues that depend on it unlock.
+5. Delete the branch. Stop the run.
 
 ## Failure
 
-A failed **attempt** (implementer stuck, findings still open after pass-3
-verification, third PO rejection):
+A failed **attempt** (implementer stuck, a specialist or general review still
+reporting majors at its round limit, third NO-GO):
 
-1. Push the branch as it is. On the PR, post
-   `**Orchestrator:** attempt <a>/2 failed at <stage>` with the open findings
-   or exact error, then close the PR (don't merge, don't delete the branch).
+1. Record the failure in `state.md` (`Status: failed`, stage, open majors),
+   commit, push. On the PR, post `**Orchestrator:** attempt <a>/2 failed at
+   <stage>` with the open majors or exact error, then close the PR (don't
+   merge, don't delete the branch).
 2. Attempt 1: comment the same on the issue, swap `in-progress` for `retry`
-   (keep `ready`). The next run starts over from `main` with a new
-   implementer.
+   (keep `ready`). The next run starts over from `main` with a new branch and
+   a new implementer.
 3. Attempt 2: comment on the issue with what failed both times, as numbered
    questions about what the spec should say instead; swap `in-progress`,
    `ready` and `retry` for `needs-spec`.
@@ -264,9 +322,10 @@ Stop the run.
 
 An **environment problem** (Godot or gdtoolkit can't be installed, GitHub
 tools unavailable, push refused) is not the issue's fault and doesn't count as
-an attempt: remove `in-progress`, leave any PR open as it is (Step 2 resumes
-it later), and stop with a report naming the problem. Never merge or open a
-PR on code whose checks couldn't run.
+an attempt. Record it in `state.md` if you can, leave the issue
+`in-progress` and any PR open (Step 2 resumes them once the environment
+works), and stop with a report naming the problem. Never merge or open a PR
+on code whose checks couldn't run.
 
 ## Report
 

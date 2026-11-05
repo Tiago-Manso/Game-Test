@@ -32,8 +32,8 @@ The implementation loop runs install, import, lint and test before every PR.
 - Run the game: `godot --path .`
 
 If Godot can't be installed (e.g. network blocked), the loop must not open or
-merge a PR on untested code: it stops, releases the issue and reports the
-environment problem.
+merge a PR on untested code: it stops and reports the environment problem,
+and resumes the issue from its logs once the environment works.
 
 ## GDScript conventions
 
@@ -55,11 +55,20 @@ environment problem.
 
 Work is queued as GitHub issues and specified in `specs/`. One iteration is the
 `implement-next` skill (`.claude/skills/implement-next/SKILL.md`). The session
-running it orchestrates three agents from `.claude/agents/`:
+running it orchestrates agents from `.claude/agents/`:
 
-1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion) and opens a draft PR.
-2. `code-reviewer` - reviews the PR in 3 passes (a fresh reviewer each time), posted as PR reviews with inline comments; the implementer fixes and replies on each thread.
-3. `product-owner` - checks every acceptance criterion and posts its verdict on the PR; on accept the loop merges.
+1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion); the loop opens a draft PR.
+2. Specialist reviewers, in parallel: `quality-reviewer`, `security-reviewer`,
+   `test-reviewer`, `performance-reviewer`. Each runs at least 2 rounds and until
+   it reports no major issues; the implementer fixes majors between rounds.
+   Minor findings are logged, not fixed, and collected into a `minor-findings` issue.
+3. `general-reviewer` (Opus) - holistic review once the specialists are done.
+4. `product-owner` (Opus) - GO / NO-GO against the spec; on GO the loop merges.
+
+Every review is posted on the PR with inline comments, and the implementer
+replies on each thread. Every agent keeps a log under `.loop/issue-<n>/` on the
+branch (see `.claude/loop/state-log.md`), so an interrupted run resumes where it
+stopped.
 
 The loop needs no human: it reviews, accepts, merges and retries a failed issue
 once by itself. The only human step is answering `needs-spec` issues with

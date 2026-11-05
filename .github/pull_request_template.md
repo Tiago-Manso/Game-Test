@@ -9,17 +9,22 @@ Spec: `specs/...`
 | Criterion | Red commit | Failure seen | Green commit |
 |-----------|------------|--------------|--------------|
 
-## Review passes
+## Reviews
 
-Each pass is a review on this PR; the implementer's replies are on its threads.
+Each round is a review on this PR; the implementer's replies are on its threads.
+Full logs: `.loop/issue-<n>/`.
 
-| Pass | Verdict | Blocking | Non-blocking | Fixed in |
-|------|---------|----------|--------------|----------|
-| 1    |         |          |              |          |
-| 2    |         |          |              |          |
-| 3    |         |          |              |          |
+| Reviewer    | Rounds | Majors fixed | Minors logged |
+|-------------|--------|--------------|---------------|
+| Quality     |        |              |               |
+| Security    |        |              |               |
+| Tests       |        |              |               |
+| Performance |        |              |               |
+| General     |        |              |               |
 
-PO verdict: see the product owner's review below.
+Product owner: see its GO / NO-GO review below.
+
+Minor findings for later: #
 
 ## Checks run
 
