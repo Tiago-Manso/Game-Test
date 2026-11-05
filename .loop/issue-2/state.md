@@ -1,13 +1,13 @@
 Status: in progress
 Issue: #2 Number formatting   Attempt: 1/2
 Branch: loop/issue-2-number-formatting   PR: #18
-Stage: general-review-2
+Stage: po-1
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews (2 rounds; r1 tests 1C+2I fixed, r2 0 blocking)
-- [ ] general review
+- [x] general review (2 rounds; G1-I1 deferred and accepted)
 - [ ] PO go / no-go
 - [ ] merged
 
@@ -34,7 +34,8 @@ Stage: general-review-2
 | 10 | performance | 2 | 2026-11-05 18:50 | done | performance-r2.md |
 | 11 | general | 1 | 2026-11-05 19:00 | done | general-r1.md |
 | 12 | implementer (fixes g1) | - | 2026-11-05 19:15 | done | implementer.md |
-| 13 | general | 2 | 2026-11-05 19:25 | started | general-r2.md |
+| 13 | general | 2 | 2026-11-05 19:25 | done | general-r2.md |
+| 14 | product-owner | 1 | 2026-11-05 19:35 | started | po-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
@@ -51,6 +52,7 @@ Stage: general-review-2
 | G1-I1 | general | important | general (specs #2 vs #6/#7) | deferred: spec conflict for the user to settle via /refine-issue before #6; flagged on #6 and #7 | - |
 | G1-m1 | general | minor | general | logged | - |
 | G1-m2 | general | minor | general (specs/README, implement-next Step 10) | logged | - |
+| G2-m1 | general | minor | general (PR body) | logged | - |
 
 ## Tech debt (Minor and deferred Important)
 - G1-I1 (important, deferred) general - spec #2 prints values below 1000 as whole numbers, but spec #6 (`Upgrade: 5.72`) and spec #7 (`DPS: 9.00`) expect decimals via NumberFormat; fractional gold/costs show as e.g. "Gold: 5" vs disabled "Upgrade: 5". Reason: spec conflict, user decides via /refine-issue before #6 (either spec #2 gains 3 significant digits below 1000, or #6/#7 examples become `5`/`9`). Flagged on #6 and #7.
@@ -62,3 +64,4 @@ Stage: general-review-2
 - Q2-m1 (minor) test/unit/test_number_format.gd:77 - sweep checks SCIENTIFIC twice: `_assert_mantissa` loops both notations, but the exact `1.00e%d`/`9.99e%d` asserts already cover it. Fix: `_assert_mantissa` checks SUFFIX only (drop the loop and `limit` ternary).
 - G1-m1 (minor) general - Godot float parsing isn't correctly rounded above ~1e22: JSON round trip of 10^k changes 115 of k=3..300 (14 change the display, e.g. 10^23 `100ac` -> `99.9ac`); default JSON.stringify keeps ~14 significant digits so gold drifts on save/load. Fix: note in #8 - save floats losslessly (var_to_str or the double's bytes/hex) and test the round trip.
 - G1-m2 (minor) general - specs never reach `Status: done`: specs/README says in-review -> done on merge, but implement-next Step 10 never sets it (spec #1 on main still in-review). Fix: set the spec's Status: done in the merge step.
+- G2-m1 (minor) general (PR body) - "Checks run" still says GUT 17/17 (3604 asserts); now 19/19 (4212). Fix: refresh Checks run at merge (done in the final PR body); implement-next Step 10.3 could say so.
