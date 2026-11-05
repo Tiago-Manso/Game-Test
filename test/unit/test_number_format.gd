@@ -28,3 +28,20 @@ func test_suffix_sequence_is_right_at_its_boundaries() -> void:
 func test_scientific_examples_produce_exact_strings() -> void:
 	assert_eq(NumberFormat.format(1234.0, NumberFormat.Notation.SCIENTIFIC), "1.23e3")
 	assert_eq(NumberFormat.format(1000000.0, NumberFormat.Notation.SCIENTIFIC), "1.00e6")
+
+
+func test_negative_values_format_the_absolute_value_with_a_minus() -> void:
+	assert_eq(NumberFormat.format(-7.0), "-7")
+	assert_eq(NumberFormat.format(-1234.0), "-1.23K")
+	assert_eq(NumberFormat.format(-1234.0, NumberFormat.Notation.SCIENTIFIC), "-1.23e3")
+
+
+func test_infinity_prints_as_infinity_sign() -> void:
+	assert_eq(NumberFormat.format(INF), "∞")
+	assert_eq(NumberFormat.format(INF, NumberFormat.Notation.SCIENTIFIC), "∞")
+	assert_eq(NumberFormat.format(-INF), "-∞")
+
+
+func test_nan_prints_as_question_mark() -> void:
+	assert_eq(NumberFormat.format(NAN), "?")
+	assert_eq(NumberFormat.format(NAN, NumberFormat.Notation.SCIENTIFIC), "?")
