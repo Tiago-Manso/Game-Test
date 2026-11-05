@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 Issue: #3 Balance config   Attempt: 1/2
 Branch: loop/issue-3-balance-config
 
@@ -27,3 +27,4 @@ Criterion 4: passes on first run - criterion 2's formulas already read every fie
 Criterion 5 red: "Expected [<null>] to be anything but NULL: shotgun found". Red commit adds a unit_by_id stub returning null (so the unknown-id half already passes; the shotgun half is the red). Lint 0, format 0.
 Criterion 5 green: linear search over units by id. Tests exit 0 (32/32, 4283 asserts), import 0, lint 0, format 0.
 Refactor: the load_default tests use the before_each config instead of loading it again. Tests exit 0 (32/32, 4283 asserts), import 0, lint 0, format 0.
+Spec set to in-review, all five [test] criteria ticked (docs commit). Final checks: import exit 0, lint exit 0, format check exit 0, tests exit 0 (32/32, 4283 asserts).

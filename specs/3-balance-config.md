@@ -1,7 +1,7 @@
 # Balance config
 
 - Issue: #3
-- Status: ready
+- Status: in-review
 
 ## Context
 
@@ -40,11 +40,11 @@ Every balance number lives in data so we can tune without touching code
 
 ## Acceptance criteria
 
-- [ ] [test] `load_default()` returns a config whose values match the table, including the 3 units in order Pistol, Shotgun, Rocket.
-- [ ] [test] Each formula returns the expected value for n/level 0, 1 and 10 using the default values (e.g. `block_hp(10)` ≈ 16.29, `unit_cost(pistol, 0)` = 10).
-- [ ] [test] `tap_damage(1)` = 1, `unit_dps(any, 0)` = 0.
-- [ ] [test] Changing a value on a config instance changes the formula result (no constants hidden in code).
-- [ ] [test] `unit_by_id(&"shotgun")` returns Shotgun; an unknown id returns null.
+- [x] [test] `load_default()` returns a config whose values match the table, including the 3 units in order Pistol, Shotgun, Rocket.
+- [x] [test] Each formula returns the expected value for n/level 0, 1 and 10 using the default values (e.g. `block_hp(10)` ≈ 16.29, `unit_cost(pistol, 0)` = 10).
+- [x] [test] `tap_damage(1)` = 1, `unit_dps(any, 0)` = 0.
+- [x] [test] Changing a value on a config instance changes the formula result (no constants hidden in code).
+- [x] [test] `unit_by_id(&"shotgun")` returns Shotgun; an unknown id returns null.
 
 ## Assets
 
