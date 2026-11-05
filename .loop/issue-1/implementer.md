@@ -10,7 +10,7 @@ Branch: loop/issue-1-project-skeleton
 ## [test] criteria
 | # | Criterion | Status | Red | Green | Refactor |
 |---|-----------|--------|-----|-------|----------|
-| 1 | test_project_settings.gd: viewport, stretch, aspect, orientation, emulate touch, main scene | red | (this commit) | - | - |
+| 1 | test_project_settings.gd: viewport, stretch, aspect, orientation, emulate touch, main scene | green | c48cf6f | (this commit) | - |
 | 2 | test_main_scene.gd: root is Control named Main | todo | - | - | - |
 | 3 | import, lint, format check, test commands exit 0 | todo | - | - | - |
 
