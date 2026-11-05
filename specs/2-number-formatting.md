@@ -1,7 +1,7 @@
 # Number formatting
 
 - Issue: #2
-- Status: in-review
+- Status: done
 
 ## Context
 

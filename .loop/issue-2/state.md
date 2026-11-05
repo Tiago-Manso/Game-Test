@@ -1,15 +1,16 @@
-Status: in progress
+Status: done
 Issue: #2 Number formatting   Attempt: 1/2
 Branch: loop/issue-2-number-formatting   PR: #18
-Stage: po-1
+Stage: merged
+Tech-debt issue: #19
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews (2 rounds; r1 tests 1C+2I fixed, r2 0 blocking)
 - [x] general review (2 rounds; G1-I1 deferred and accepted)
-- [ ] PO go / no-go
-- [ ] merged
+- [x] PO go / no-go (GO, round 1)
+- [x] merged
 
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |
@@ -35,7 +36,7 @@ Stage: po-1
 | 11 | general | 1 | 2026-11-05 19:00 | done | general-r1.md |
 | 12 | implementer (fixes g1) | - | 2026-11-05 19:15 | done | implementer.md |
 | 13 | general | 2 | 2026-11-05 19:25 | done | general-r2.md |
-| 14 | product-owner | 1 | 2026-11-05 19:35 | started | po-r1.md |
+| 14 | product-owner | 1 | 2026-11-05 19:35 | done (GO) | po-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
