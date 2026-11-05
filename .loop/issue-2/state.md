@@ -1,11 +1,11 @@
 Status: in progress
 Issue: #2 Number formatting   Attempt: 1/2
-Branch: loop/issue-2-number-formatting   PR: -
-Stage: implementing
+Branch: loop/issue-2-number-formatting   PR: #18
+Stage: review-round-1
 
 ## Stages
 - [x] claimed
-- [ ] implemented (PR opened)
+- [x] implemented (PR opened)
 - [ ] specialist reviews
 - [ ] general review
 - [ ] PO go / no-go
@@ -22,7 +22,11 @@ Stage: implementing
 ## Agent runs
 | # | Agent    | Round | Started (UTC)    | Status  | Log             |
 |---|----------|-------|------------------|---------|-----------------|
-| 1 | implementer | - | 2026-11-05 17:55 | started | implementer.md |
+| 1 | implementer | - | 2026-11-05 17:55 | done | implementer.md |
+| 2 | quality | 1 | 2026-11-05 18:10 | started | quality-r1.md |
+| 3 | security | 1 | 2026-11-05 18:10 | started | security-r1.md |
+| 4 | tests | 1 | 2026-11-05 18:10 | started | tests-r1.md |
+| 5 | performance | 1 | 2026-11-05 18:10 | started | performance-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
