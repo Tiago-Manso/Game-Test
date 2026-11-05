@@ -1,4 +1,4 @@
-Status: done
+Status: in progress
 Issue: #2 Number formatting   Attempt: 1/2
 Branch: loop/issue-2-number-formatting
 
@@ -13,7 +13,12 @@ Branch: loop/issue-2-number-formatting
 | 6 | No mantissa >= 1000 from 1e3 to 1e300 | refactored | a3328de | ee791e1 |
 
 ## Findings
-None yet.
+Round 1 (tests reviewer). Fixing T1-C1, T1-I1, T1-I2; minors T1-m1, T1-m2, Q1-m1..m3 logged, not fixed.
+| ID | Severity | Status | Commit | Notes |
+|----|----------|--------|--------|-------|
+| T1-C1 | critical | fixed | (this commit) | Truncation cases added (suffix 1239, 1999, 12399, 199999; scientific 1239, 1999). Pass immediately on current code; verified they fail with the floori->roundi mutation (6 asserts). |
+| T1-I1 | important | todo | - | |
+| T1-I2 | important | todo | - | |
 
 ## Last checks
 Baseline (before any change): import 0, lint 0, format 0, tests 8/8 pass.

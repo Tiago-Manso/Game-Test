@@ -16,6 +16,13 @@ func test_suffix_examples_produce_exact_strings() -> void:
 	assert_eq(NumberFormat.format(1000000.0), "1.00M")
 
 
+func test_suffix_digits_are_truncated_never_rounded_up() -> void:
+	assert_eq(NumberFormat.format(1239.0), "1.23K")
+	assert_eq(NumberFormat.format(1999.0), "1.99K")
+	assert_eq(NumberFormat.format(12399.0), "12.3K")
+	assert_eq(NumberFormat.format(199999.0), "199K")
+
+
 func test_suffix_sequence_is_right_at_its_boundaries() -> void:
 	assert_eq(NumberFormat.format(1e12), "1.00T")
 	assert_eq(NumberFormat.format(1e15), "1.00aa")
@@ -28,6 +35,11 @@ func test_suffix_sequence_is_right_at_its_boundaries() -> void:
 func test_scientific_examples_produce_exact_strings() -> void:
 	assert_eq(NumberFormat.format(1234.0, NumberFormat.Notation.SCIENTIFIC), "1.23e3")
 	assert_eq(NumberFormat.format(1000000.0, NumberFormat.Notation.SCIENTIFIC), "1.00e6")
+
+
+func test_scientific_digits_are_truncated_never_rounded_up() -> void:
+	assert_eq(NumberFormat.format(1239.0, NumberFormat.Notation.SCIENTIFIC), "1.23e3")
+	assert_eq(NumberFormat.format(1999.0, NumberFormat.Notation.SCIENTIFIC), "1.99e3")
 
 
 func test_negative_values_format_the_absolute_value_with_a_minus() -> void:
