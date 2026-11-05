@@ -6,9 +6,17 @@ enum Notation { SUFFIX, SCIENTIFIC }
 ## Suffixes for the first powers of 1000; after them come two letters: aa, ab, ... zz.
 const NAMED_SUFFIXES: Array[String] = ["", "K", "M", "B", "T"]
 const LETTER_COUNT: int = 26
+const INFINITY_TEXT: String = "∞"
+const NAN_TEXT: String = "?"
 
 
 static func format(value: float, notation: Notation = Notation.SUFFIX) -> String:
+	if is_nan(value):
+		return NAN_TEXT
+	if value < 0.0:
+		return "-" + format(-value, notation)
+	if is_inf(value):
+		return INFINITY_TEXT
 	if value < 1000.0:
 		return str(int(floor(value)))
 	var exponent: int = _decimal_exponent(value)
