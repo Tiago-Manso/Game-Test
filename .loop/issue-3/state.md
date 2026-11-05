@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #3 Balance config   Attempt: 1/2
 Branch: loop/issue-3-balance-config   PR: #20
-Stage: review-round-1-fixes
+Stage: review-round-2
 
 ## Stages
 - [x] claimed
@@ -27,12 +27,16 @@ Stage: review-round-1-fixes
 | 3 | security | 1 | 2026-11-05 20:00 | done | security-r1.md |
 | 4 | tests | 1 | 2026-11-05 20:00 | done | tests-r1.md |
 | 5 | performance | 1 | 2026-11-05 20:00 | done | performance-r1.md |
-| 6 | implementer (fixes r1) | 1 | 2026-11-05 20:10 | started | implementer.md |
+| 6 | implementer (fixes r1) | 1 | 2026-11-05 20:10 | done | implementer.md |
+| 7 | quality | 2 | 2026-11-05 20:20 | started | quality-r2.md |
+| 8 | security | 2 | 2026-11-05 20:20 | started | security-r2.md |
+| 9 | tests | 2 | 2026-11-05 20:20 | started | tests-r2.md |
+| 10 | performance | 2 | 2026-11-05 20:20 | started | performance-r2.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
 |---------|----------|----------|------------------|----------|------------|
-| Q1-I1 | quality | important | scripts/core/balance_config.gd:21 | open | - |
+| Q1-I1 | quality | important | scripts/core/balance_config.gd:21 | fixed | 55ce5cc |
 | Q1-m1 | quality | minor | scripts/core/balance_config.gd:57 | logged | - |
 | S1-m1 | security | minor | scripts/core/balance_config.gd:27 | logged | - |
 | S1-m2 | security | minor | scripts/core/balance_config.gd:47 | logged | - |
