@@ -60,9 +60,20 @@ earnings, milestone multipliers, real art, sound, monetisation.
 - D-025 Settings live in a panel behind a gear button on the HUD; notation is its only option for now (was Q-008).
 - D-026 Milestone 1 is split into issues #1-#9, all labelled `ready`; the loop waits until an issue's `Depends on #n` issues are closed.
 
+## Architecture (2026-11-05)
+
+`specs/architecture.md` is the agreed architecture for the whole game.
+
+- D-027 The architecture lives in `specs/architecture.md`; task specs link its sections.
+- D-028 It covers the whole game: milestone 1 in detail, later features as extension points.
+- D-029 Pure fixed-step simulation: rules in plain classes, time moves only through `Simulation.step(dt)` called by the `Game` node.
+- D-030 Systems talk through signals on state objects, wired by the `Game` node; no gameplay autoloads or event bus.
+- D-031 The simulation runs at 60 Hz, Godot's default physics rate (was Q-009).
+
 ## Open questions
 
-None for milestone 1.
+- Q-010 Offline earnings cap (e.g. 8 h, 24 h) - milestone 2.
+- Q-011 Prestige (Time Warp) in milestone 2 with stages, or a separate milestone 3?
 
 ## Milestone 1 issues
 
@@ -77,6 +88,8 @@ None for milestone 1.
 | 7 | Team units | `specs/7-team-units.md` | #5 |
 | 8 | Save and load | `specs/8-save-and-load.md` | #6, #7 |
 | 9 | Notation setting | `specs/9-notation-setting.md` | #8 |
+| 13 | CI workflow | `specs/13-ci-workflow.md` | #1 |
+| 14 | Whole-game integration test | `specs/14-whole-game-integration-test.md` | #9 |
 
 ## Later milestones (parked)
 
