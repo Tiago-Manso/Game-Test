@@ -1,7 +1,7 @@
 # Balance config
 
 - Issue: #3
-- Status: in-review
+- Status: done
 
 ## Context
 

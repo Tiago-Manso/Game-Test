@@ -1,15 +1,16 @@
-Status: in progress
+Status: done
 Issue: #3 Balance config   Attempt: 1/2
 Branch: loop/issue-3-balance-config   PR: #20
-Stage: po-1
+Stage: merged
+Tech-debt issue: #21
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews (2 rounds; r1 Q1-I1 fixed, r2 0 blocking)
 - [x] general review (1 round, 0 blocking)
-- [ ] PO go / no-go
-- [ ] merged
+- [x] PO go / no-go (GO, round 1)
+- [x] merged
 
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |
@@ -33,7 +34,7 @@ Stage: po-1
 | 9 | tests | 2 | 2026-11-05 20:20 | done | tests-r2.md |
 | 10 | performance | 2 | 2026-11-05 20:20 | done | performance-r2.md |
 | 11 | general | 1 | 2026-11-05 20:30 | done | general-r1.md |
-| 12 | product-owner | 1 | 2026-11-05 20:40 | started | po-r1.md |
+| 12 | product-owner | 1 | 2026-11-05 20:40 | done (GO) | po-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
