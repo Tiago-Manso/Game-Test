@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 Issue: #1 Project skeleton   Attempt: 1/2
 Branch: loop/issue-1-project-skeleton
 
@@ -15,7 +15,7 @@ Branch: loop/issue-1-project-skeleton
 | 3 | import, lint, format check, test commands exit 0 | green | (observed, no commit: lint exit 1 'Cannot open file scenes') | 97aa6b7 (scenes/ exists; scripts/.gitkeep in 9fc93ad) | - |
 
 ## Manual criteria
-- [manual] window 540x960 with placeholder background, resizing stays portrait: implemented (this commit) - full-rect ColorRect `Background`, colour (0.12, 0.13, 0.18), mouse_filter ignore. Headless smoke run `--quit-after 30` exits 0.
+- [manual] window 540x960 with placeholder background, resizing stays portrait: implemented in 981d7cf - full-rect ColorRect `Background`, colour (0.12, 0.13, 0.18), mouse_filter ignore. Headless smoke run `--quit-after 30` exits 0.
 
 ## Findings
 (none yet)
@@ -31,3 +31,8 @@ Branch: loop/issue-1-project-skeleton
 - lint: exit 0
 - format: exit 0
 - test: exit 0, 8/8 passed
+- Final run in a fresh worktree after 981d7cf: import 0, lint 0, format 0, test 0 (8/8).
+
+## Notes
+- CLAUDE.md commands work unchanged with Godot 4.5.1 + gdtoolkit 4.5.0; no gdlintrc/.gdformatrc needed (commands only list scenes/scripts/test, so addons/ is never linted).
+- Spec status set to in-review; [test] criteria ticked; [manual] left for the PO.
