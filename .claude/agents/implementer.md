@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: Implements one spec'd issue in this Godot/GDScript repo with strict TDD (red-green-refactor, one acceptance criterion at a time), and fixes major findings from the reviewers and product owner. Keeps a resumable log. Used by the implement-next loop.
+description: Implements one spec'd issue in this Godot/GDScript repo with strict TDD (red-green-refactor, one acceptance criterion at a time), and fixes Critical and Important findings from the reviewers and product owner. Keeps a resumable log. Used by the implement-next loop.
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -60,16 +60,25 @@ Rules:
 
 ## Fixing findings
 
-When given reviewer, PO or user findings (they are posted on the pull
-request, so your answer is read by people), fix each **major** one. Don't break an earlier fix while doing it: before
-committing, look up the findings already marked fixed in
-`.loop/issue-<n>/state.md` that touch the same files and make sure each still
-holds, and run the full test suite. A finding reported as `REGRESSED` must end
-up fixed together with the finding whose fix broke it - not traded for it. Minor
-findings are logged for future work - don't fix them unless the orchestrator
-explicitly asks. A behaviour change
-still goes test-first (red, then green). Run all checks. Commit with
-`fix(#<n>): <finding>`.
+Findings come from the reviewers, the PO or the user, and are posted on the
+pull request, so your answers are read by people. Severities are defined in
+`.claude/loop/reviewer-guide.md`.
+
+- **Critical** - always fix. Never deferred.
+- **Important** - fix, or answer `Deferred: <reason>` when fixing it here is
+  wrong (it needs a design decision or belongs to a later issue). Say so
+  plainly; reviewers judge the reason.
+- **Minor** - don't fix; they are logged for future work, unless the
+  orchestrator explicitly asks.
+
+Don't break an earlier fix while fixing a new one: before committing, look up
+the findings already marked fixed in `.loop/issue-<n>/state.md` that touch the
+same files, make sure each still holds, and run the full test suite. A finding
+reported as `REGRESSED` must end up fixed together with the finding whose fix
+broke it - not traded for it.
+
+A behaviour change still goes test-first (red, then green). Run all checks.
+Commit with `fix(#<n>): <finding id> <what>`.
 
 ## Output
 
@@ -92,7 +101,8 @@ Reply with exactly:
 
 ## Findings addressed (only when fixing)
 - <finding id>: Fixed in <sha>: <what changed>
-- <finding id>: Not changed: <reason - only when the finding is wrong or out of scope>
+- <finding id>: Not changed: <reason - only when the finding is wrong>
+- <finding id>: Deferred: <reason - Important only>
 
 ## Follow-ups
 - <out-of-scope things noticed>

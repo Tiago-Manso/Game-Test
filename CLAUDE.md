@@ -60,8 +60,12 @@ running it orchestrates agents from `.claude/agents/`:
 1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion); the loop opens a draft PR.
 2. Specialist reviewers, in parallel: `quality-reviewer`, `security-reviewer`,
    `test-reviewer`, `performance-reviewer`. Each runs at least 2 rounds and until
-   it reports no major issues; the implementer fixes majors between rounds.
-   Minor findings are logged, not fixed, and collected into a `minor-findings` issue.
+   it reports no blocking issues; the implementer fixes them between rounds.
+   Findings are **Critical** (unsafe or wrong; must be fixed), **Important** (real
+   cost; fixed unless deferred with a stated reason) or **Minor** (a suggestion;
+   logged, not fixed) - see `.claude/loop/reviewer-guide.md`. Minors (and any
+   deferred Importants) are grouped into a `tech-debt` issue per PR, analysed and
+   fixed later only if required: `/refine-issue tech-debt`.
 3. `general-reviewer` (Opus) - holistic review once the specialists are done.
 4. `product-owner` (Opus) - GO / NO-GO against the spec; on GO the loop merges.
 

@@ -14,17 +14,17 @@ Spec: `specs/...`
 Each round is a review on this PR; the implementer's replies are on its threads.
 Full logs: `.loop/issue-<n>/`.
 
-| Reviewer    | Rounds | Majors fixed | Minors logged |
-|-------------|--------|--------------|---------------|
-| Quality     |        |              |               |
-| Security    |        |              |               |
-| Tests       |        |              |               |
-| Performance |        |              |               |
-| General     |        |              |               |
+| Reviewer    | Rounds | Critical fixed | Important fixed | Important deferred | Minor logged |
+|-------------|--------|----------------|-----------------|--------------------|--------------|
+| Quality     |        |                |                 |                    |              |
+| Security    |        |                |                 |                    |              |
+| Tests       |        |                |                 |                    |              |
+| Performance |        |                |                 |                    |              |
+| General     |        |                |                 |                    |              |
 
 Product owner: see its GO / NO-GO review below.
 
-Minor findings for later: #
+Tech debt (Minor, deferred Important): #
 
 ## Checks run
 

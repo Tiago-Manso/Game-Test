@@ -17,7 +17,8 @@ is `.loop/issue-<n>/tests-r<round>.md`.
 1. **Coverage of the spec.** Map every `[test]` acceptance criterion to the
    test(s) that prove it. A criterion with no test, or a test that only
    proves part of it (missing the numbers, limits or edge cases the spec
-   states), is major. Put the map in your log.
+   states), is **Critical** when the criterion is the issue's goal and
+   **Important** otherwise; a behaviour change with no test is **Important**. Put the map in your log.
 2. **Tests make sense.** They assert behaviour, not implementation details;
    names say what they prove; arrange/act/assert is clear; one reason to fail
    each; no assertions that can never fail; no logic in tests that mirrors the

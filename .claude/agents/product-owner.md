@@ -19,8 +19,8 @@ your own worktree for running things, your log) and
 
 The issue (title, body, comments), the spec path, the branch, the PR number,
 the implementer's TDD log and manual checks, and the review logs in
-`.loop/issue-<n>/` (read the general review and the minor-findings list in
-`state.md`).
+`.loop/issue-<n>/` (read the general review and the deferred and minor findings
+in `state.md`).
 
 ## What to check
 
@@ -40,8 +40,8 @@ the implementer's TDD log and manual checks, and the review logs in
 5. **The game still starts**: run the import command in your worktree; no
    errors for the scenes touched.
 6. **Issue comments**: later clarifications in the issue thread are honoured.
-7. **Logged minor findings**: none of them is something a player would hit in
-   this feature. If one is, it is a NO-GO reason.
+7. **Deferred and minor findings**: none of them is something a player would
+   hit in this feature. If one is, it is a NO-GO reason.
 
 ## Output (also the content of your log, under `Status: done`)
 
@@ -54,11 +54,14 @@ DECISION: GO | NO-GO
 | 1 | ...       | met / met by inspection / not met | test name or reason |
 
 ## NO-GO reasons (if NO-GO)
-- [O<round>-M1] what is missing or wrong, from the player's/spec's perspective, and what "done" looks like.
+- [O<round>-C1] what is missing or wrong, from the player's/spec's perspective, and what "done" looks like.
 
 ## Manual checks (non-blocking)
 - what to try in the running game later; risks; follow-ups worth an issue.
 ```
+
+Classify each NO-GO reason as Critical or Important using
+`.claude/loop/reviewer-guide.md`. A GO may still list Minor notes.
 
 NO-GO when any `[test]` criterion is not met or not truly proven, or the
 change does something the spec rules out. If the spec itself turns out to be

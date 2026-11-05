@@ -8,7 +8,7 @@ the issue was built.
 
 ```
 .loop/issue-<n>/
-  state.md                  orchestrator - stage, agent runs, findings, minor findings
+  state.md                  orchestrator - stage, agent runs, findings, tech debt
   implementer.md            implementer - progress per criterion and per finding
   <agent>-r<k>.md           one per review agent and round, e.g. security-r2.md,
                             general-r1.md, po-r1.md
@@ -47,7 +47,7 @@ Stage: review-round-2
 - [ ] merged
 
 ## Specialist reviewers
-| Reviewer    | Rounds | Last round majors | Done |
+| Reviewer    | Rounds | Last round blocking | Done |
 |-------------|--------|-------------------|------|
 | quality     | 2      | 0                 | yes  |
 | security    | 2      | 1                 | no   |
@@ -64,16 +64,19 @@ Stage: review-round-2
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
 |---------|----------|----------|------------------|----------|------------|
-| S1-M1   | security | major    | scripts/save.gd:40 | fixed  | abc1234    |
-| T1-M2   | tests    | major    | test/unit/test_save.gd:12 | regressed (by def5678) | 9a8b7c6 |
+| S1-C1   | security | critical | scripts/save.gd:40 | fixed  | abc1234    |
+| T1-I2   | tests    | important | test/unit/test_save.gd:12 | regressed (by def5678) | 9a8b7c6 |
+| P1-I1   | performance | important | scripts/hud.gd:30 | deferred: needs the big-number type (D-021) | - |
 | Q1-m2   | quality  | minor    | scripts/hud.gd:12  | logged | -          |
 
-## Minor findings (for future work)
-- Q1-m2 scripts/hud.gd:12 - label text built in _process every frame.
+## Tech debt (Minor and deferred Important)
+- P1-I1 (important, deferred) scripts/hud.gd:30 - formatting recomputed per frame; reason: needs the big-number type (D-021).
+- Q1-m2 (minor) scripts/hud.gd:12 - label text could use a format string.
 ```
 
-Finding status: `open`, `fixed`, `not changed` (with the reason), `logged`
-(minor), or `regressed (by <sha>)` when the general reviewer finds a later
+Finding status: `open`, `fixed`, `not changed` (with the reason),
+`deferred: <reason>` (Important only), `logged` (Minor), or
+`regressed (by <sha>)` when the general reviewer finds a later
 commit undid the fix - it goes back to `fixed` with the new fix commit once
 repaired.
 
@@ -82,6 +85,8 @@ start a fresh agent of the same type and tell it to resume from its log.
 
 ## Finding IDs
 
-`<reviewer letter><round>-<M|m><n>`: `Q` quality, `S` security, `T` tests,
-`P` performance, `G` general, `O` product owner; `M` major, `m` minor.
-Example: `S2-M1` is the security reviewer's round-2 major finding 1.
+`<reviewer letter><round>-<C|I|m><n>`: `Q` quality, `S` security, `T` tests,
+`P` performance, `G` general, `O` product owner, `U` the user (comments on the
+PR); `C` Critical, `I` Important, `m` Minor (severities in
+`.claude/loop/reviewer-guide.md`).
+Example: `S2-C1` is the security reviewer's round-2 Critical finding 1.

@@ -35,14 +35,40 @@ git worktree remove --force "$wt"
 
 ## Severity
 
-- **major** - must be fixed before merge: wrong behaviour, a real
-  vulnerability, a test that doesn't prove what it claims, a missing test for
-  a spec criterion, a performance problem a player would notice on a phone,
-  failing checks, anything that will clearly hurt later work.
-- **minor** - worth doing some day, not now: naming, small simplifications,
-  micro-optimisations, nice-to-have tests. Minor findings are **not fixed in
-  this PR**: they are logged for future work, so only call something major if
-  it truly blocks.
+Every finding gets exactly one of three severities.
+
+- **Critical** - merging as-is is unsafe or wrong: an acceptance-criterion
+  violation that defeats the issue's goal, a bug with a concrete input ->
+  wrong output or crash, or a security / data-integrity risk. **Blocks merge.**
+  Can't be deferred.
+- **Important** - it works, but carries real cost the team shouldn't wave
+  through silently: a cited guideline violation (`CLAUDE.md`, the spec, the
+  reviewer guides), missing test coverage for a behaviour change, a concrete
+  performance issue (per-frame allocation or lookup in a hot path, wrong data
+  structure, work that grows with play time), or an unexplained deviation from
+  the local pattern. **Fix before merge unless explicitly deferred with a
+  stated reason.**
+- **Minor** - correct and mergeable, but improvable: a nit within a
+  guideline's latitude, a marginal "better way" where the current code is
+  fine, cosmetic naming. **A suggestion, not a gate:** logged as tech debt, to be
+  analysed and fixed later if required - not fixed in this PR.
+
+How to choose:
+
+- For Critical, name the concrete input, state or scenario and the wrong
+  result. If you can't, it isn't Critical.
+- For Important, cite the guideline, the missing test, the hot path (how
+  often it runs) or the local pattern it departs from.
+- When in doubt between two levels, pick the lower one and say why it might
+  be higher.
+- Failing checks (import, lint, format, tests) are always **Critical**.
+
+**Deferral.** The implementer may answer an Important finding with
+`Deferred: <reason>` instead of fixing it (e.g. it needs a design decision, or
+belongs to a later issue). In later rounds, judge each deferral: a sound
+reason settles it - don't raise it again; an unsound one is re-raised under
+its original ID with why the reason doesn't hold. Deferred Importants are
+grouped with the Minors as tech debt at merge.
 
 Don't pad. An empty list is a good result.
 
@@ -57,19 +83,24 @@ it goes in the review body.
 ## Output (also the content of your log, under `Status: done`)
 
 ```
-VERDICT: NO MAJOR ISSUES | MAJOR ISSUES
+VERDICT: NO BLOCKING ISSUES | BLOCKING ISSUES
 
-## Major
-- [<ID>] path/to/file.gd:42 - problem. Why it matters. Suggested fix.
+## Critical
+- [<ID>] path/to/file.gd:42 - concrete input/scenario -> wrong result. Why it matters. Suggested fix.
+
+## Important
+- [<ID>] path/to/file.gd:58 - problem, and the guideline / test / hot path / pattern it concerns. Suggested fix.
 
 ## Minor
 - [<ID>] path/to/file.gd:17 - suggestion.
 
 ## Earlier findings (round 2+)
-- [<ID>] fixed | not fixed - note
+- [<ID>] fixed | not fixed | deferred: reason sound / reason doesn't hold - note
 
 ## What I ran
 - <command>: <result>
 ```
 
-Use the finding IDs from `.claude/loop/state-log.md` (e.g. `S2-M1`, `S2-m3`).
+"Blocking" means any Critical, or any Important that isn't deferred.
+
+Use the finding IDs from `.claude/loop/state-log.md` (e.g. `S2-C1`, `S2-I2`, `S2-m3`).

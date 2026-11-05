@@ -32,8 +32,9 @@ is `.loop/issue-<n>/security-r<round>.md`.
 6. **Dependencies.** Vendored addons and new third-party code: known source,
    pinned version, nothing unexpected (no network calls, no editor-only code at runtime).
 7. **Cheating / economy integrity.** Note where currency or progress can be
-   trivially edited - **minor** for an offline single-player game, unless the
-   spec says otherwise.
+   trivially edited - **Minor** for an offline single-player game, unless the
+   spec says otherwise. A crash or lost progress from a corrupt or edited save
+   is **Critical** (data integrity).
 
 You may run `gdlint`, `grep` sweeps, or targeted GUT tests in your own
 worktree to prove a point.

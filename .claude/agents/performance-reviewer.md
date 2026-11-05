@@ -32,7 +32,9 @@ is `.loop/issue-<n>/performance-r<round>.md`.
 6. **Numbers.** `pow`/`log` or formatting of huge numbers repeated per frame
    when the value hasn't changed.
 
-Only flag what matters at this game's scale: something a player would feel
-(stutter, battery drain, heat, memory growth over a long session) is major;
-micro-optimisations are minor. If you claim a hot path, show why (how often
+Only flag what matters at this game's scale. Something a player would feel
+(stutter, battery drain, heat, memory growth over a long session) is
+**Important** - **Critical** if it makes the feature unusable (a leak that
+eventually crashes, a frame hitch on every tap). Micro-optimisations are
+**Minor**. If you claim a hot path, show why (how often
 it runs, rough cost); a quick benchmark in your own worktree is welcome.

@@ -27,7 +27,7 @@ is `.loop/issue-<n>/quality-r<round>.md`.
    reaching up the tree, file layout.
 5. **Scope.** Nothing built beyond the spec; follow-ups noted, not built.
 6. **Lint and format.** Run `gdlint` and `gdformat --check` (they don't need
-   Godot or a worktree). Failures are major.
+   Godot or a worktree). Failures are Critical.
 
 Leave security, test quality and performance to the other reviewers unless
 you see something serious - then report it anyway.

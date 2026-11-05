@@ -22,6 +22,13 @@ The argument can be:
 
 For a `needs-spec` issue, the loop's questions in the comments are your agenda.
 
+- **`tech-debt`** -> analyse the tech debt. List open issues labelled
+  `tech-debt`, merge their items into one view grouped by area, and drop items
+  the code has since fixed. With the user, decide per group: fix now (refine
+  into a normal issue + spec, `ready`), keep for later, or won't fix (tick it
+  off with the reason). Close a `tech-debt` issue once all its items are
+  handled, linking the issues created from it.
+
 ## Step 2 - Do your homework before asking
 
 Read `discussions/game-design.md` (the agreed design, decisions `D-###`,

@@ -1,6 +1,6 @@
 ---
 name: implement-next
-description: Run one iteration of the autonomous implementation loop - resume an interrupted issue from its state logs, otherwise pick the next `ready` GitHub issue, implement it with TDD, review it in the pull request (quality, security, tests and performance reviewers until no major issues remain, then an Opus general review and an Opus product-owner go/no-go) and merge it. Use when asked to "implement the next issue", "run the loop", or via `/loop /implement-next` or a scheduled task.
+description: Run one iteration of the autonomous implementation loop - resume an interrupted issue from its state logs, otherwise pick the next `ready` GitHub issue, implement it with TDD, review it in the pull request (quality, security, tests and performance reviewers until no Critical or Important issues remain, then an Opus general review and an Opus product-owner go/no-go) and merge it. Use when asked to "implement the next issue", "run the loop", or via `/loop /implement-next` or a scheduled task.
 ---
 
 # implement-next: one iteration of the autonomous loop
@@ -30,7 +30,7 @@ work, started with the Agent tool:
 
 | Agent                 | `subagent_type`        | Model   | Job |
 |-----------------------|------------------------|---------|-----|
-| Implementer           | `implementer`          | default | Writes tests and code with strict TDD; fixes major findings. |
+| Implementer           | `implementer`          | default | Writes tests and code with strict TDD; fixes Critical and Important findings. |
 | Quality reviewer      | `quality-reviewer`     | default | Correctness, design, readability, conventions, scope, lint. |
 | Security reviewer     | `security-reviewer`    | default | Untrusted input, save files, paths, code execution, secrets, dependencies. |
 | Test reviewer         | `test-reviewer`        | default | Tests prove the spec, make sense, aren't flaky; TDD really happened. |
@@ -70,8 +70,8 @@ in `.claude/loop/state-log.md`). You keep `state.md`:
 
 - Before starting an agent: add its row to "Agent runs" as `started`, commit
   `state.md`, push.
-- After it returns: mark the row `done`, record its findings (major and
-  minor) in "Findings", update the stage, commit `state.md` **and the agent's
+- After it returns: mark the row `done`, record its findings (with their
+  severity) in "Findings", update the stage, commit `state.md` **and the agent's
   log** (review agents don't commit their own), push.
 - Push after every change, so a new session can always pick up from the
   branch alone.
@@ -85,23 +85,40 @@ in `.claude/loop/state-log.md`). You keep `state.md`:
 | `retry`          | The first attempt failed; the next run tries once more from scratch. |
 | `needs-spec`     | Waiting for the user to refine the spec. The only human step.  |
 | `autoloop`       | Set on every PR the loop opens.                                |
-| `minor-findings` | Follow-up issue listing minor review findings from a merged PR. Not `ready`; refine it when you want it built. |
+| `tech-debt`      | Tech-debt issue grouping a merged PR's Minor (and deferred Important) findings. Never `ready` by itself: analysed later with `/refine-issue tech-debt` and fixed only if required. |
 | `priority:high`  | Picked before other `ready` issues.                            |
 
 Adding a label that does not exist yet creates it; don't stop over a missing label.
+
+## Severity
+
+Reviewers classify every finding as **Critical**, **Important** or **Minor**
+(definitions in `.claude/loop/reviewer-guide.md`):
+
+| Severity  | Before merge |
+|-----------|--------------|
+| Critical  | Must be fixed. Can't be deferred. |
+| Important | Must be fixed, unless the implementer defers it with a stated reason that the reviewers accept. |
+| Minor     | Not fixed in this PR; logged and grouped as tech debt. |
+
+**Blocking** findings are every Critical and every Important that isn't
+deferred. All Minors - and any deferred Importants - are grouped into one
+`tech-debt` issue at merge, to be analysed and fixed later if required.
 
 ## Limits
 
 - One issue in flight at a time.
 - Specialist reviewers: each runs **at least `MIN_REVIEW_ROUNDS = 2`** rounds
-  and keeps running until its latest round has **no major findings**. A
-  specialist still reporting majors in round `MAX_REVIEW_ROUNDS = 4` fails the attempt.
-- General review: repeats until a round has no majors; a major still open in
+  and keeps running until its latest round has **no blocking findings**. A
+  specialist still reporting blocking findings in round `MAX_REVIEW_ROUNDS = 4`
+  fails the attempt.
+- General review: repeats until a round has no blocking findings; one still open in
   round `MAX_GENERAL_ROUNDS = 3` fails the attempt.
 - Product owner: `MAX_NO_GO = 2`; a third NO-GO fails the attempt.
 - `MAX_ATTEMPTS = 2` per issue; the second failed attempt sends the issue to `needs-spec`.
-- Minor findings are never fixed in the PR that found them: they are logged in
-  `state.md`, posted on the PR, and collected into a `minor-findings` issue at merge.
+- Minor findings are never fixed in the PR that found them, and deferred
+  Importants aren't either: both are logged in `state.md`, posted on the PR,
+  and grouped into a `tech-debt` issue at merge.
 - Never push to `main` directly. Code reaches `main` only by merging a loop PR
   after the PO's **GO** with all checks green.
 - Merge with a **merge commit** (not squash or rebase) so the red/green/refactor
@@ -119,16 +136,17 @@ request changes on its own PR, so every review is submitted with event
 - **Each review agent's round** is one PR review:
   - create a pending review (`pull_request_review_write`, method `create`);
   - add each finding that has a `file:line` in the diff as an inline comment
-    (`add_comment_to_pending_review`): `**[S2-M1] major** - ...` or
-    `**[S2-m3] minor (logged for later)** - ...`;
+    (`add_comment_to_pending_review`): `**[S2-C1] Critical** - ...`,
+    `**[S2-I2] Important** - ...` or `**[S2-m3] Minor (logged for later)** - ...`;
   - submit (`submit_pending`, event `COMMENT`) with the body
-    `**<Security> review - round <k> (<security-reviewer> agent): <n> major, <m> minor**`
-    (or `NO MAJOR ISSUES`), what it ran, the earlier findings it verified, and
+    `**<Security> review - round <k> (<security-reviewer> agent): <c> Critical, <i> Important, <m> Minor**`
+    (or `no blocking issues`), what it ran, the earlier findings it verified, and
     findings without a diff line.
-- **Implementer fixes** - reply on each major finding's thread
-  (`add_reply_to_pull_request_comment`) with `**Implementer:** Fixed in <sha>:
-  <what changed>` or `**Implementer:** Not changed: <reason>`, and resolve the
-  thread (`resolve_review_thread`) when fixed. Findings from a review body get
+- **Implementer fixes** - reply on each Critical and Important finding's
+  thread (`add_reply_to_pull_request_comment`) with `**Implementer:** Fixed in
+  <sha>: <what changed>`, `**Implementer:** Not changed: <reason>` or
+  `**Implementer:** Deferred: <reason>`, and resolve the thread
+  (`resolve_review_thread`) when fixed or deferred. Findings from a review body get
   one PR comment listing them the same way.
 - **Product owner** - a PR review with body
   `**Product owner (product-owner agent, Opus): GO | NO-GO**`, the acceptance
@@ -160,9 +178,11 @@ behind, and read `.loop/issue-<n>/state.md`:
 - If there is no `state.md` but a branch exists, treat it as Step 6 with an
   implementer told to resume from `git log` and `implementer.md`.
 - If no branch exists, remove `in-progress` and go on to Step 3.
-- Comments from the user on the PR that have no loop reply yet are **major
-  findings** for the next fixes round: record them in `state.md` (ID
-  `U-M<n>`), have the implementer handle them, and reply on their threads.
+- Comments from the user on the PR that have no loop reply yet are findings
+  for the next fixes round: classify each with the reviewer guide (Important
+  unless it is clearly Critical or Minor), record it in `state.md` (ID
+  `U-C<n>` / `U-I<n>` / `U-m<n>`), have the implementer handle it, and reply
+  on its thread.
 
 Then carry on with the normal steps from there; skip Steps 3-5.
 
@@ -234,7 +254,7 @@ Record the PR number and stage `implemented` in `state.md`, push, and post
 
 Specialists: `quality-reviewer`, `security-reviewer`, `test-reviewer`,
 `performance-reviewer`. A specialist is **done** once it has run at least
-`MIN_REVIEW_ROUNDS` (2) rounds and its latest round found no major issues.
+`MIN_REVIEW_ROUNDS` (2) rounds and its latest round found no blocking issues.
 
 Repeat for round `k` = 1, 2, ... while any specialist isn't done:
 
@@ -242,14 +262,18 @@ Repeat for round `k` = 1, 2, ... while any specialist isn't done:
    done, push, then start them **in parallel**, each fresh, with its log path
    `.loop/issue-<n>/<quality|security|tests|performance>-r<k>.md`.
 2. **Record and post.** When all have returned, record their findings in
-   `state.md` (majors as `open`, minors as `logged` and in "Minor findings"),
+   `state.md` (Critical and Important as `open`, Minor as `logged` and in
+   "Tech debt"),
    commit their logs, push, and post one PR review per specialist.
-3. **Fix.** If the round has major findings, send them all to the
+3. **Fix.** If the round has blocking findings, send them all to the
    implementer (same agent) in one message. It fixes them (TDD for behaviour
    changes), updates its log, pushes, and reports per finding. Mark them
    `fixed` / `not changed` in `state.md`, push, reply on the threads and
    resolve the fixed ones.
-4. A specialist with major findings in round `MAX_REVIEW_ROUNDS` (4) ->
+   Deferred Importants: mark them `deferred: <reason>`, add them to
+   "Tech debt". The next round's reviewer judges the reason; one it rejects
+   comes back `open` under the same ID.
+4. A specialist with blocking findings in round `MAX_REVIEW_ROUNDS` (4) ->
    **Failure**.
 
 Done specialists don't run again. The general review catches anything later
@@ -267,8 +291,8 @@ Repeat for round `g` = 1, 2, ...:
    `regressed (by <sha>)` in `state.md`, reopen its PR thread (`unresolve_review_thread`) with a
    reply naming the commit that undid it, and send it to the implementer together
    with the finding whose fix caused it.
-3. No major findings -> Step 9. Otherwise the implementer fixes them as in
-   Step 7 and the next round starts. A major still open in round
+3. No blocking findings -> Step 9. Otherwise the implementer fixes them as in
+   Step 7 and the next round starts. A blocking finding still open in round
    `MAX_GENERAL_ROUNDS` (3) -> **Failure**.
 
 ## Step 9 - Product owner go / no-go (Opus)
@@ -283,7 +307,7 @@ and manual-check steps. Record, commit, push and post its review.
   issue as numbered questions, swap `in-progress`, `ready` and `retry` for
   `needs-spec`, record it in `state.md`, push, stop the run.
 - **NO-GO** otherwise -> the implementer fixes the reasons, then **one**
-  general review round (Step 8 rules: majors must reach zero), then a fresh
+  general review round (Step 8 rules: blocking findings must reach zero), then a fresh
   `product-owner` round `r+1`. A third NO-GO -> **Failure**.
 
 ## Step 10 - Merge
@@ -293,13 +317,15 @@ Only after the PO's **GO**:
 1. Merge `origin/main` into the branch if it moved; run every check from
    `CLAUDE.md` yourself. Anything red -> the implementer fixes it, then one
    general review round and the PO again, as for a NO-GO.
-2. If minor findings were logged, open one issue
-   `Minor findings from #<n>: <issue title>` labelled `minor-findings` (not
-   `ready`), listing each with its ID, reviewer, `file:line` and text, and
-   linking the PR. Record its number in `state.md`.
+2. If "Tech debt" in `state.md` isn't empty, open one issue
+   `Tech debt from #<n>: <issue title>` labelled `tech-debt` (never `ready`),
+   linking the PR, with one checklist item per finding - ID, severity,
+   reviewer, `file:line`, the finding and the suggested fix - grouped by area
+   (e.g. save system, HUD, tests), deferred Importants first with their
+   reasons. Record its number in `state.md`.
 3. Set `state.md` to `Status: done`, stage `merged`; update the PR body with
-   the final TDD log, a table of review rounds per agent (rounds, majors,
-   minors) and the minor-findings issue link. Commit, push.
+   the final TDD log, a table of review rounds per agent (rounds, Critical /
+   Important fixed, deferred, Minor logged) and the tech-debt issue link. Commit, push.
 4. Mark the PR ready for review (no longer draft), post
    `**Orchestrator:** merging - PO GO, checks green.`, and merge it with a
    merge commit (`merge_pull_request`, method `merge`). `Closes #<number>`
@@ -309,11 +335,11 @@ Only after the PO's **GO**:
 ## Failure
 
 A failed **attempt** (implementer stuck, a specialist or general review still
-reporting majors at its round limit, third NO-GO):
+reporting blocking findings at its round limit, third NO-GO):
 
-1. Record the failure in `state.md` (`Status: failed`, stage, open majors),
+1. Record the failure in `state.md` (`Status: failed`, stage, open blocking findings),
    commit, push. On the PR, post `**Orchestrator:** attempt <a>/2 failed at
-   <stage>` with the open majors or exact error, then close the PR (don't
+   <stage>` with the open blocking findings or exact error, then close the PR (don't
    merge, don't delete the branch).
 2. Attempt 1: comment the same on the issue, swap `in-progress` for `retry`
    (keep `ready`). The next run starts over from `main` with a new branch and
