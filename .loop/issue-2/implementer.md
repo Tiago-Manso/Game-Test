@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 Issue: #2 Number formatting   Attempt: 1/2
 Branch: loop/issue-2-number-formatting
 
@@ -17,13 +17,14 @@ Round 1 (tests reviewer). Fixing T1-C1, T1-I1, T1-I2; minors T1-m1, T1-m2, Q1-m1
 | ID | Severity | Status | Commit | Notes |
 |----|----------|--------|--------|-------|
 | T1-C1 | critical | fixed | 1e8d2a3 | Truncation cases added (suffix 1239, 1999, 12399, 199999; scientific 1239, 1999). Pass immediately on current code; verified they fail with the floori->roundi mutation (6 asserts). |
-| T1-I1 | important | fixed | (this commit) | Added 1e9 -> 1.00B, 10^90 -> 1.00az, 10^96 -> 1.00bb, 10^300 -> 1.00dr. They pass on the current code and fail with B->G and second-letter mutations. Suggested input 1e15 * pow(1000.0, 27) is one ulp below 10^96 (rightly 999ba), so the large inputs use pow(10.0, k). The 1.00ba input moved to the same form; it is the same float. |
-| T1-I2 | important | todo | - | |
+| T1-I1 | important | fixed | 55e8d17 | Added 1e9 -> 1.00B, 10^90 -> 1.00az, 10^96 -> 1.00bb, 10^300 -> 1.00dr. They pass on the current code and fail with B->G and second-letter mutations. Suggested input 1e15 * pow(1000.0, 27) is one ulp below 10^96 (rightly 999ba), so the large inputs use pow(10.0, k). The 1.00ba input moved to the same form; it is the same float. |
+| T1-I2 | important | fixed | (this commit) | Sweep now asserts exact "1.00e<k>" for each 10^k and "9.99e<k-1>" for the float just below; the below-1000 test asserts SCIENTIFIC 0 -> "0", 7 -> "7", 999.9 -> "999". They pass on the current code and fail with the `exponent % 100` and "7.00e0" mutations. |
 
 ## Last checks
 Baseline (before any change): import 0, lint 0, format 0, tests 8/8 pass.
 After refactor c2b886d: import exit 0, lint exit 0, format check exit 0, tests exit 0 (17/17 tests, 3604 asserts).
-Refactor commit: c2b886d. Spec set to in-review in the docs commit.
+Refactor commit: c2b886d.
+After round-1 fixes: import exit 0, lint exit 0, format check exit 0, tests exit 0 (19/19 tests, 4212 asserts). Production code unchanged by round 1; T1-C1 and T1-I1 asserts still pass after the T1-I2 change. Spec set to in-review in the docs commit.
 Criterion 1 red: test fails on assertions ([""] expected to equal ["0"]). The red commit adds a stub `NumberFormat.format` returning "" so the failure is the assertion, not a missing class.
 Criterion 2 red: ["1234"] expected to equal ["1.23K"]. First green attempt gave "100K" for 1e6 (log() lands at 5.999...), so the exponent is corrected against pow(10, e).
 Criterion 3 red: [""] expected to equal ["1.00T"] (SUFFIXES out of bounds at index 4: the sequence stops at M).

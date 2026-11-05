@@ -6,6 +6,9 @@ func test_values_below_1000_print_as_truncated_integers() -> void:
 	assert_eq(NumberFormat.format(0.0), "0")
 	assert_eq(NumberFormat.format(7.0), "7")
 	assert_eq(NumberFormat.format(999.9), "999")
+	assert_eq(NumberFormat.format(0.0, NumberFormat.Notation.SCIENTIFIC), "0")
+	assert_eq(NumberFormat.format(7.0, NumberFormat.Notation.SCIENTIFIC), "7")
+	assert_eq(NumberFormat.format(999.9, NumberFormat.Notation.SCIENTIFIC), "999")
 
 
 func test_suffix_examples_produce_exact_strings() -> void:
@@ -72,8 +75,14 @@ func test_no_power_of_ten_or_value_just_below_it_reaches_a_mantissa_of_1000() ->
 	for power: int in range(3, 301):
 		var exact: float = pow(10.0, power)
 		_assert_mantissa(exact, "1")
+		assert_eq(NumberFormat.format(exact, NumberFormat.Notation.SCIENTIFIC), "1.00e%d" % power)
 		if power > 3:
-			_assert_mantissa(_previous_float(exact), "9")
+			var just_below: float = _previous_float(exact)
+			_assert_mantissa(just_below, "9")
+			assert_eq(
+				NumberFormat.format(just_below, NumberFormat.Notation.SCIENTIFIC),
+				"9.99e%d" % (power - 1)
+			)
 
 
 ## Both notations show 3 significant digits below their limit (1000 for a
