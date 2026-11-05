@@ -79,6 +79,8 @@ once by itself. The only human step is answering `needs-spec` issues with
 `/refine-issue`. The whole discussion stays readable on each PR.
 
 - Run continuously in a session: `/loop /implement-next` (or `/loop 30m /implement-next`).
+- Run once, next issue: `/implement-next`. Run once, a specific issue: `/implement-next #<n>`
+  (it must be `ready` with its dependencies closed, and no other issue in flight).
 - Run on a schedule: a scheduled task whose prompt is `/implement-next`.
 
 Design discussions live in `discussions/` (`game-design.md` is the current
