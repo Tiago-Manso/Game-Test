@@ -5,7 +5,7 @@ Branch: loop/issue-2-number-formatting
 ## Criteria
 | # | Criterion | Status | Red | Green |
 |---|-----------|--------|-----|-------|
-| 1 | Values below 1000 print as truncated integers | red | (this commit) | - |
+| 1 | Values below 1000 print as truncated integers | green | f6565fb | (this commit) |
 | 2 | Suffix examples produce the exact strings | todo | - | - |
 | 3 | Suffix sequence boundaries (T, aa, ab, ba) | todo | - | - |
 | 4 | Scientific examples produce the exact strings | todo | - | - |

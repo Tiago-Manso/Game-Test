@@ -2,5 +2,5 @@ class_name NumberFormat
 ## Formats game numbers for display (spec #2, D-016).
 
 
-static func format(_value: float) -> String:
-	return ""
+static func format(value: float) -> String:
+	return str(int(floor(value)))
