@@ -8,11 +8,13 @@ const NAMED_SUFFIXES: Array[String] = ["", "K", "M", "B", "T"]
 const LETTER_COUNT: int = 26
 
 
-static func format(value: float, _notation: Notation = Notation.SUFFIX) -> String:
+static func format(value: float, notation: Notation = Notation.SUFFIX) -> String:
 	if value < 1000.0:
 		return str(int(floor(value)))
 	var exponent: int = _decimal_exponent(value)
 	var digits: String = str(int(floor(value / pow(10.0, exponent - 2))))
+	if notation == Notation.SCIENTIFIC:
+		return digits.substr(0, 1) + "." + digits.substr(1) + "e" + str(exponent)
 	var group: int = exponent / 3
 	var integer_digits: int = exponent % 3 + 1
 	var mantissa: String = digits.substr(0, integer_digits)

@@ -8,7 +8,7 @@ Branch: loop/issue-2-number-formatting
 | 1 | Values below 1000 print as truncated integers | green | f6565fb | 5b71971 |
 | 2 | Suffix examples produce the exact strings | green | a2ff64e | 21a7d69 |
 | 3 | Suffix sequence boundaries (T, aa, ab, ba) | green | 704388b (input fixed in 95b09cb) | 174f9d7 |
-| 4 | Scientific examples produce the exact strings | red | (this commit) | - |
+| 4 | Scientific examples produce the exact strings | green | 3bdc999 | (this commit) |
 | 5 | Negative, INF and NAN cases | todo | - | - |
 | 6 | No mantissa >= 1000 from 1e3 to 1e300 | todo | - | - |
 
