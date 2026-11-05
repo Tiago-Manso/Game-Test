@@ -20,5 +20,6 @@ func test_suffix_sequence_is_right_at_its_boundaries() -> void:
 	assert_eq(NumberFormat.format(1e12), "1.00T")
 	assert_eq(NumberFormat.format(1e15), "1.00aa")
 	assert_eq(NumberFormat.format(1e18), "1.00ab")
-	# 1e15 * 1000^26: the 27th two-letter suffix, after az.
-	assert_eq(NumberFormat.format(1e93), "1.00ba")
+	# The 27th two-letter suffix, after az. Computed as the spec writes it: the
+	# GDScript literal 1e93 parses one ulp below 10^93, which truly is 999az.
+	assert_eq(NumberFormat.format(1e15 * pow(1000.0, 26)), "1.00ba")

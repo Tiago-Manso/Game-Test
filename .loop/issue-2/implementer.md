@@ -20,3 +20,4 @@ Baseline (before any change): import 0, lint 0, format 0, tests 8/8 pass.
 Criterion 1 red: test fails on assertions ([""] expected to equal ["0"]). The red commit adds a stub `NumberFormat.format` returning "" so the failure is the assertion, not a missing class.
 Criterion 2 red: ["1234"] expected to equal ["1.23K"]. First green attempt gave "100K" for 1e6 (log() lands at 5.999...), so the exponent is corrected against pow(10, e).
 Criterion 3 red: [""] expected to equal ["1.00T"] (SUFFIXES out of bounds at index 4: the sequence stops at M).
+Criterion 3 test fix: the GDScript literal `1e93` parses to 9.999999999999999e+92 (Godot's float parser is not correctly rounded above 1e22; 118 of the powers 10^0..10^308 differ from pow(10, k)), so strict truncation rightly prints 999az for it. The test now computes the value as the spec writes it, `1e15 * pow(1000.0, 26)`, which equals pow(10, 93) exactly.
