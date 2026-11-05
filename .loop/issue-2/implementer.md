@@ -18,7 +18,13 @@ Round 1 (tests reviewer). Fixing T1-C1, T1-I1, T1-I2; minors T1-m1, T1-m2, Q1-m1
 |----|----------|--------|--------|-------|
 | T1-C1 | critical | fixed | 1e8d2a3 | Truncation cases added (suffix 1239, 1999, 12399, 199999; scientific 1239, 1999). Pass immediately on current code; verified they fail with the floori->roundi mutation (6 asserts). |
 | T1-I1 | important | fixed | 55e8d17 | Added 1e9 -> 1.00B, 10^90 -> 1.00az, 10^96 -> 1.00bb, 10^300 -> 1.00dr. They pass on the current code and fail with B->G and second-letter mutations. Suggested input 1e15 * pow(1000.0, 27) is one ulp below 10^96 (rightly 999ba), so the large inputs use pow(10.0, k). The 1.00ba input moved to the same form; it is the same float. |
-| T1-I2 | important | fixed | (this commit) | Sweep now asserts exact "1.00e<k>" for each 10^k and "9.99e<k-1>" for the float just below; the below-1000 test asserts SCIENTIFIC 0 -> "0", 7 -> "7", 999.9 -> "999". They pass on the current code and fail with the `exponent % 100` and "7.00e0" mutations. |
+| T1-I2 | important | fixed | ed3e881 | Sweep now asserts exact "1.00e<k>" for each 10^k and "9.99e<k-1>" for the float just below; the below-1000 test asserts SCIENTIFIC 0 -> "0", 7 -> "7", 999.9 -> "999". They pass on the current code and fail with the `exponent % 100` and "7.00e0" mutations. |
+
+General review round 1:
+| ID | Severity | Status | Commit | Notes |
+|----|----------|--------|--------|-------|
+| G1-I1 | important | deferred | - | Spec conflict, not a code defect: spec #2 requires whole numbers below 1000 (criterion 1: 999.9 -> "999"), while spec #6 (`Upgrade: 5.72`) and spec #7 (`DPS: 9.00`) show decimals. Confirmed in specs/6-tap-damage-upgrade.md:12 and specs/7-team-units.md:20. Choosing between them is a product decision for /refine-issue before #6 starts; changing it here would break spec #2's own accepted criterion. No code change. |
+G1-m1, G1-m2: logged by the orchestrator, not acted on.
 
 ## Last checks
 Baseline (before any change): import 0, lint 0, format 0, tests 8/8 pass.
