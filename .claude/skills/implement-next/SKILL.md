@@ -262,7 +262,11 @@ Repeat for round `g` = 1, 2, ...:
 1. Start a fresh `general-reviewer` with `model: "opus"`, log
    `.loop/issue-<n>/general-r<g>.md`, the spec, the PR discussion so far and
    the path to `state.md`.
-2. Record, commit, push and post its review as in Step 7.
+2. Record, commit, push and post its review as in Step 7. A finding it
+   reports as `REGRESSED` keeps its original ID: set it back to
+   `regressed (by <sha>)` in `state.md`, reopen its PR thread (`unresolve_review_thread`) with a
+   reply naming the commit that undid it, and send it to the implementer together
+   with the finding whose fix caused it.
 3. No major findings -> Step 9. Otherwise the implementer fixes them as in
    Step 7 and the next round starts. A major still open in round
    `MAX_GENERAL_ROUNDS` (3) -> **Failure**.

@@ -61,7 +61,11 @@ Rules:
 ## Fixing findings
 
 When given reviewer, PO or user findings (they are posted on the pull
-request, so your answer is read by people), fix each **major** one. Minor
+request, so your answer is read by people), fix each **major** one. Don't break an earlier fix while doing it: before
+committing, look up the findings already marked fixed in
+`.loop/issue-<n>/state.md` that touch the same files and make sure each still
+holds, and run the full test suite. A finding reported as `REGRESSED` must end
+up fixed together with the finding whose fix broke it - not traded for it. Minor
 findings are logged for future work - don't fix them unless the orchestrator
 explicitly asks. A behaviour change
 still goes test-first (red, then green). Run all checks. Commit with

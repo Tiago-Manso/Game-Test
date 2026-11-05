@@ -65,11 +65,17 @@ Stage: review-round-2
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
 |---------|----------|----------|------------------|----------|------------|
 | S1-M1   | security | major    | scripts/save.gd:40 | fixed  | abc1234    |
+| T1-M2   | tests    | major    | test/unit/test_save.gd:12 | regressed (by def5678) | 9a8b7c6 |
 | Q1-m2   | quality  | minor    | scripts/hud.gd:12  | logged | -          |
 
 ## Minor findings (for future work)
 - Q1-m2 scripts/hud.gd:12 - label text built in _process every frame.
 ```
+
+Finding status: `open`, `fixed`, `not changed` (with the reason), `logged`
+(minor), or `regressed (by <sha>)` when the general reviewer finds a later
+commit undid the fix - it goes back to `fixed` with the new fix commit once
+repaired.
 
 A run marked `started` without `done` means that agent was interrupted:
 start a fresh agent of the same type and tell it to resume from its log.
