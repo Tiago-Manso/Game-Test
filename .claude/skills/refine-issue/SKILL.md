@@ -18,9 +18,16 @@ The argument can be:
 - **An idea in words** -> a new issue.
 - **An issue number** -> refine that issue. Read its body, comments and any spec it links.
 - **Nothing** -> list open issues labelled `needs-spec`, then open issues with no
-  `ready` / `in-progress` / `blocked` label, and ask which one to refine (or a new idea).
+  `ready` / `in-progress` label, and ask which one to refine (or a new idea).
 
 For a `needs-spec` issue, the loop's questions in the comments are your agenda.
+
+- **`tech-debt`** -> analyse the tech debt. List open issues labelled
+  `tech-debt`, merge their items into one view grouped by area, and drop items
+  the code has since fixed. With the user, decide per group: fix now (refine
+  into a normal issue + spec, `ready`), keep for later, or won't fix (tick it
+  off with the reason). Close a `tech-debt` issue once all its items are
+  handled, linking the issues created from it.
 
 ## Step 2 - Do your homework before asking
 

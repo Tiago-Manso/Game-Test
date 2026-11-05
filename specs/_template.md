@@ -13,7 +13,7 @@ What must be built. Be specific about behaviour, inputs, outputs and edge cases.
 
 ## Acceptance criteria
 
-<!-- Tag each item: [test] = covered by a GUT test, [manual] = visual/feel, checked by a human in the PR. -->
+<!-- Tag each item: [test] = covered by a GUT test, [manual] = visual/feel, judged by the PO from the code; prefer [test] wherever possible. -->
 
 - [ ] [test] <Concrete, checkable item - e.g. "pressing jump while on the floor sets velocity.y to -jump_speed">
 - [ ] [manual] <e.g. "the jump animation plays while airborne">

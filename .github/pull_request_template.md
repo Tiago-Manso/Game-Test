@@ -9,28 +9,30 @@ Spec: `specs/...`
 | Criterion | Red commit | Failure seen | Green commit |
 |-----------|------------|--------------|--------------|
 
-## Code review (agent)
+## Reviews
 
-| Pass | Verdict | Blocking | Non-blocking | Fixed in |
-|------|---------|----------|--------------|----------|
-| 1    |         |          |              |          |
-| 2    |         |          |              |          |
-| 3    |         |          |              |          |
+Each round is a review on this PR; the implementer's replies are on its threads.
+Full logs: `.loop/issue-<n>/`.
 
-Non-blocking notes left open:
+| Reviewer    | Rounds | Critical fixed | Important fixed | Important deferred | Minor logged |
+|-------------|--------|----------------|-----------------|--------------------|--------------|
+| Quality     |        |                |                 |                    |              |
+| Security    |        |                |                 |                    |              |
+| Tests       |        |                |                 |                    |              |
+| Performance |        |                |                 |                    |              |
+| General     |        |                |                 |                    |              |
 
-## PO acceptance (agent)
+Product owner: see its GO / NO-GO review below.
 
-| # | Criterion | Verdict | Evidence |
-|---|-----------|---------|----------|
-
-### For the human reviewer
-
-Manual checks to try in the running game.
+Tech debt (Minor, deferred Important): #
 
 ## Checks run
 
 - 
+
+## Manual checks (non-blocking)
+
+Things to try in the running game; the PO judged them from the code.
 
 ## Follow-ups
 

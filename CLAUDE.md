@@ -31,8 +31,9 @@ The implementation loop runs install, import, lint and test before every PR.
 - Test: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gexit`
 - Run the game: `godot --path .`
 
-If Godot can't be installed (e.g. network blocked), the loop must not open a
-PR on untested code: it marks the issue `blocked` and says why.
+If Godot can't be installed (e.g. network blocked), the loop must not open or
+merge a PR on untested code: it stops and reports the environment problem,
+and resumes the issue from its logs once the environment works.
 
 ## GDScript conventions
 
@@ -54,11 +55,28 @@ PR on untested code: it marks the issue `blocked` and says why.
 
 Work is queued as GitHub issues and specified in `specs/`. One iteration is the
 `implement-next` skill (`.claude/skills/implement-next/SKILL.md`). The session
-running it orchestrates three agents from `.claude/agents/`:
+running it orchestrates agents from `.claude/agents/`:
 
-1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion).
-2. `code-reviewer` - reviews code, tests and TDD history in 3 passes (a fresh reviewer each time), with the implementer fixing the findings after each pass.
-3. `product-owner` - checks every acceptance criterion; must accept before a PR is opened.
+1. `implementer` - builds the issue with strict TDD (red, green and refactor commits per criterion); the loop opens a draft PR.
+2. Specialist reviewers, in parallel: `quality-reviewer`, `security-reviewer`,
+   `test-reviewer`, `performance-reviewer`. Each runs at least 2 rounds and until
+   it reports no blocking issues; the implementer fixes them between rounds.
+   Findings are **Critical** (unsafe or wrong; must be fixed), **Important** (real
+   cost; fixed unless deferred with a stated reason) or **Minor** (a suggestion;
+   logged, not fixed) - see `.claude/loop/reviewer-guide.md`. Minors (and any
+   deferred Importants) are grouped into a `tech-debt` issue per PR, analysed and
+   fixed later only if required: `/refine-issue tech-debt`.
+3. `general-reviewer` (Opus) - holistic review once the specialists are done.
+4. `product-owner` (Opus) - GO / NO-GO against the spec; on GO the loop merges.
+
+Every review is posted on the PR with inline comments, and the implementer
+replies on each thread. Every agent keeps a log under `.loop/issue-<n>/` on the
+branch (see `.claude/loop/state-log.md`), so an interrupted run resumes where it
+stopped.
+
+The loop needs no human: it reviews, accepts, merges and retries a failed issue
+once by itself. The only human step is answering `needs-spec` issues with
+`/refine-issue`. The whole discussion stays readable on each PR.
 
 - Run continuously in a session: `/loop /implement-next` (or `/loop 30m /implement-next`).
 - Run on a schedule: a scheduled task whose prompt is `/implement-next`.
@@ -67,15 +85,16 @@ Design discussions live in `discussions/` (`game-design.md` is the current
 state; dated files are session logs). To queue work: run `/refine-issue <idea or #number>` and refine it together
 with Claude. It interviews you, writes `specs/<n>-<slug>.md`, creates the issue
 and labels it `ready`. (By hand: write the spec from `specs/_template.md`, open
-an issue linking it, add `ready`.) The loop opens one PR per issue
-(label `autoloop`); a human reviews and merges.
+an issue linking it, add `ready`.) The loop opens and merges one PR per issue
+(label `autoloop`).
 
 ## Conventions
 
-- Branches from the loop: `loop/issue-<n>-<slug>`. Code never goes straight to `main`.
+- Branches from the loop: `loop/issue-<n>-<slug>`. Code never goes straight to
+  `main`; it is merged from a loop PR (merge commit) after the PO accepts.
 - Exception: `refine-issue` pushes spec-only commits (files under `specs/` and `discussions/`) to
   `main` after the user approves the spec in the conversation.
 - Keep changes scoped to the issue; extra ideas become new issues.
 - Every acceptance criterion should be covered by a GUT test. Criteria that are
-  purely visual or feel-based are stated as such in the spec and checked by a human
-  in the PR.
+  purely visual or feel-based are marked `[manual]`: the PO judges them from the
+  code, and the PR lists them as non-blocking checks to try later.
