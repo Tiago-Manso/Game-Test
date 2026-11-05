@@ -1,6 +1,6 @@
 # Game architecture
 
-- Status: draft
+- Status: approved (2026-11-05)
 - Scope: the whole game. Milestone 1 (prototype) is specified in full; later
   milestones are described as extension points so the prototype doesn't block them.
 - Sources: `discussions/game-design.md` (decisions `D-###`), specs `#1`-`#9`.
@@ -14,7 +14,7 @@
 - **A-02 Scenes only show and forward.** Scenes display state and turn player
   input into commands. They never change game state themselves.
 - **A-03 One fixed-step simulation.** Time moves only through
-  `Simulation.step(dt)`, called from one place at a fixed rate. Nothing else
+  `Simulation.step(dt)`, called from one place at a fixed rate (60 Hz, D-031). Nothing else
   advances timers, damage or economy. This makes play deterministic and lets
   offline earnings reuse the same rules later.
 - **A-04 Signals, no globals.** Each logic object emits its own typed signals.
@@ -200,35 +200,35 @@ None of these are built in milestone 1. The design above leaves room for them.
 | D-028 | Scope: whole game, milestone 1 in detail, later features as extension points. |
 | D-029 | Pure fixed-step simulation: rules in plain classes, time only through `Simulation.step(dt)` from `_physics_process`. |
 | D-030 | Systems talk through signals on state objects, wired by a `Game` node; no gameplay autoloads or event bus. |
+| D-031 | Simulation runs at Godot's default physics rate, 60 Hz (was Q-009). Revisit if battery use on phones is a problem. |
 
-## 10. Effect on milestone 1 specs
+## 10. Milestone 1 specs and this document
 
-Two specs need a small change to match this document, before the loop builds them:
+The milestone 1 specs were aligned with this document on 2026-11-05:
 
-- **#4 Blocks and slots** - the field scene must **not** call `tick` itself;
-  `Simulation.step` does (A-03). Add the `block_damaged(slot, hp)` signal so HP
-  bars update without polling.
-- **#5 Tap damage and gold** - introduce `Simulation` with `step`, `tap` and the
-  `block_broken -> add_gold` connection; `Game` calls `step` from
-  `_physics_process` and builds the objects as in section 5.
+| Spec | Implements |
+|------|------------|
+| #3 Balance config | 4.5, A-05 |
+| #2 Number formatting | 4.6, A-06 |
+| #4 Blocks and slots | 4.2, 5; the field scene never advances time and updates on `block_damaged` |
+| #5 Tap damage and gold | 4.1, 4.4, 5; introduces `Simulation` and the `Game` node driving `step` |
+| #6 Tap damage upgrade | `Simulation.buy_tap_upgrade` |
+| #7 Team units | 4.3; `Team.step` called by `Simulation.step` before respawns; cached DPS |
+| #8 Save and load | 6, A-07; `saved_at` and the migration step |
+| #9 Notation setting | 4.1, 4.6, 5 |
+| #13 CI workflow | 11 |
+| #14 Whole-game integration test | 7 |
 
-#7 then adds `Team` to `Simulation.step`, #6 and #7 add `buy_*` commands, and
-#8 adds `saved_at` to the save.
+## 11. Further tasks
 
-## 11. Candidate new tasks
+Milestone 1 (issues created): **#13 CI workflow**, **#14 whole-game
+integration test**.
 
-| Task | Milestone | Why |
-|------|-----------|-----|
-| CI workflow: run import, lint, format and GUT on every PR | 1 | The loop and reviewers get an independent check; Step 2 of the loop already watches CI. Depends on #1. |
-| Whole-game integration test (`Main` + N simulation steps) | 1 | Guards the wiring across #5-#9. Depends on #9. |
-| Modifier pipeline | 2 | Needed before abilities, milestone multipliers and prestige. |
-| Stage system with boss timer | 2 | Levels and bosses. |
-| Offline earnings | 2 | Uses `saved_at` and the simulation. |
+Milestone 2 (to refine when it is planned): modifier pipeline, stage system
+with boss timer, offline earnings.
 
 ## 12. Open questions
 
-- Q-009 Physics tick rate for the simulation: keep Godot's default 60 Hz, or
-  lower it (e.g. 30 Hz) to save battery on mobile?
 - Q-010 Offline earnings cap (e.g. 8 h, 24 h) - for milestone 2.
 - Q-011 Should prestige (Time Warp) be in milestone 2 together with stages, or a
   separate milestone 3?

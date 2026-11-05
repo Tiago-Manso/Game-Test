@@ -10,7 +10,7 @@ First thing gold can buy: stronger taps (D-011).
 ## Requirements
 
 - A tap-upgrade button in the lower part of the screen (shop area) showing the current tap damage, the current level and the cost of the next level, all via `NumberFormat`. e.g. `Tap Lv 3 - 3 dmg - Upgrade: 5.72`.
-- Pressing it when `GameState.can_afford(tap_upgrade_cost(tap_level))`: spends the cost and raises `tap_level` by 1. New taps use the new damage immediately.
+- Pressing it calls `simulation.buy_tap_upgrade() -> bool` (architecture section 4.4). When `GameState.can_afford(tap_upgrade_cost(tap_level))` it spends the cost and raises `tap_level` by 1; otherwise it returns false and changes nothing. New taps use the new damage immediately.
 - When gold is not enough, the button is disabled; it re-enables as soon as gold reaches the cost (react to `gold_changed`).
 - `GameState` emits `tap_level_changed(level: int)`.
 - One press buys one level.
@@ -35,4 +35,4 @@ Placeholder OK.
 
 ## Notes
 
-D-011, D-020. Depends on #5.
+D-011, D-020. Architecture: sections 4.1, 4.4, 5. Depends on #5.

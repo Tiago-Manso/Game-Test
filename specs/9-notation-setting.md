@@ -36,4 +36,4 @@ Placeholder OK (text "⚙" or a simple icon).
 
 ## Notes
 
-D-016, D-025. Depends on #8.
+D-016, D-025. Architecture: sections 4.1, 4.6, 5. Depends on #8.
