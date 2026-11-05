@@ -19,3 +19,27 @@ const DEFAULT_PATH: String = "res://data/balance.tres"
 
 static func load_default() -> BalanceConfig:
 	return load(DEFAULT_PATH) as BalanceConfig
+
+
+func block_hp(_n: int) -> float:
+	return 0.0
+
+
+func block_gold(_n: int) -> float:
+	return 0.0
+
+
+func tap_damage(_level: int) -> float:
+	return 0.0
+
+
+func tap_upgrade_cost(_level: int) -> float:
+	return 0.0
+
+
+func unit_dps(_unit: UnitConfig, _level: int) -> float:
+	return 0.0
+
+
+func unit_cost(_unit: UnitConfig, _level: int) -> float:
+	return 0.0
