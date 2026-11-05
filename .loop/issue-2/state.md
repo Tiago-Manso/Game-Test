@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #2 Number formatting   Attempt: 1/2
 Branch: loop/issue-2-number-formatting   PR: #18
-Stage: general-review-1-fixes
+Stage: general-review-2
 
 ## Stages
 - [x] claimed
@@ -33,7 +33,8 @@ Stage: general-review-1-fixes
 | 9 | tests | 2 | 2026-11-05 18:50 | done | tests-r2.md |
 | 10 | performance | 2 | 2026-11-05 18:50 | done | performance-r2.md |
 | 11 | general | 1 | 2026-11-05 19:00 | done | general-r1.md |
-| 12 | implementer (fixes g1) | - | 2026-11-05 19:15 | started | implementer.md |
+| 12 | implementer (fixes g1) | - | 2026-11-05 19:15 | done | implementer.md |
+| 13 | general | 2 | 2026-11-05 19:25 | started | general-r2.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
@@ -47,11 +48,12 @@ Stage: general-review-1-fixes
 | Q1-m2 | quality | minor | scripts/core/number_format.gd:48 | logged | - |
 | Q1-m3 | quality | minor | scripts/core/number_format.gd:2 | logged | - |
 | Q2-m1 | quality | minor | test/unit/test_number_format.gd:77 | logged | - |
-| G1-I1 | general | important | general (specs #2 vs #6/#7) | open | - |
+| G1-I1 | general | important | general (specs #2 vs #6/#7) | deferred: spec conflict for the user to settle via /refine-issue before #6; flagged on #6 and #7 | - |
 | G1-m1 | general | minor | general | logged | - |
 | G1-m2 | general | minor | general (specs/README, implement-next Step 10) | logged | - |
 
 ## Tech debt (Minor and deferred Important)
+- G1-I1 (important, deferred) general - spec #2 prints values below 1000 as whole numbers, but spec #6 (`Upgrade: 5.72`) and spec #7 (`DPS: 9.00`) expect decimals via NumberFormat; fractional gold/costs show as e.g. "Gold: 5" vs disabled "Upgrade: 5". Reason: spec conflict, user decides via /refine-issue before #6 (either spec #2 gains 3 significant digits below 1000, or #6/#7 examples become `5`/`9`). Flagged on #6 and #7.
 - Q1-m1 (minor) scripts/core/number_format.gd:22 - format(-0.5) returns "-0" (literal spec reading); odd once negative changes are shown. Fix: only prefix "-" when the absolute value doesn't format as "0" (needs a spec note).
 - Q1-m2 (minor) scripts/core/number_format.gd:48 - clamp bounds 100/999 hard-coded while SIGNIFICANT_DIGITS looks tunable; the suffix layout only works for 3. Fix: derive bounds or comment that 3 is fixed.
 - Q1-m3 (minor) scripts/core/number_format.gd:2 - header swaps decisions: notation switch is D-016, big-number swap is D-021. Fix: reword.
