@@ -49,3 +49,7 @@ func unit_dps(unit: UnitConfig, level: int) -> float:
 ## Cost to raise `unit` from `level` to `level + 1`.
 func unit_cost(unit: UnitConfig, level: int) -> float:
 	return unit.base_cost * pow(unit.cost_growth, level)
+
+
+func unit_by_id(_id: StringName) -> UnitConfig:
+	return null

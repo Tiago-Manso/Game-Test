@@ -121,6 +121,16 @@ func test_changing_instance_values_changes_every_formula() -> void:
 	assert_eq(config.unit_cost(unit, 3), 48.0, "unit_cost uses the unit's base_cost and growth")
 
 
+func test_unit_by_id_finds_shotgun() -> void:
+	var unit: UnitConfig = _config.unit_by_id(&"shotgun")
+	assert_not_null(unit, "shotgun found")
+	assert_same(unit, _config.units[1], "the Shotgun entry itself")
+
+
+func test_unit_by_id_returns_null_for_unknown_id() -> void:
+	assert_null(_config.unit_by_id(&"laser"))
+
+
 func _assert_close(actual: float, expected: float, label: String) -> void:
 	assert_almost_eq(actual, expected, absf(expected) * RELATIVE_TOLERANCE, label)
 
