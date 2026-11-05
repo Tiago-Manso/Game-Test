@@ -1,7 +1,7 @@
 # Number formatting
 
 - Issue: #2
-- Status: ready
+- Status: in-review
 
 ## Context
 
@@ -25,12 +25,12 @@ logic, no scenes.
 
 ## Acceptance criteria
 
-- [ ] [test] Values below 1000 print as truncated integers (0, 7, 999.9 -> `999`).
-- [ ] [test] Suffix examples above all produce the exact strings listed.
-- [ ] [test] The suffix sequence is right at its boundaries: 1e12 -> `1.00T`, 1e15 -> `1.00aa`, 1e18 -> `1.00ab`, 1e15 * 1000^26 -> `1.00ba`.
-- [ ] [test] Scientific examples produce the exact strings listed.
-- [ ] [test] Negative, `INF` and `NAN` cases produce the strings listed.
-- [ ] [test] No value from 1000 to 1e300 (sampled: each power of 10 and each power of 10 minus a tiny epsilon) ever produces a mantissa of 1000 or more.
+- [x] [test] Values below 1000 print as truncated integers (0, 7, 999.9 -> `999`).
+- [x] [test] Suffix examples above all produce the exact strings listed.
+- [x] [test] The suffix sequence is right at its boundaries: 1e12 -> `1.00T`, 1e15 -> `1.00aa`, 1e18 -> `1.00ab`, 1e15 * 1000^26 -> `1.00ba`.
+- [x] [test] Scientific examples produce the exact strings listed.
+- [x] [test] Negative, `INF` and `NAN` cases produce the strings listed.
+- [x] [test] No value from 1000 to 1e300 (sampled: each power of 10 and each power of 10 minus a tiny epsilon) ever produces a mantissa of 1000 or more.
 
 ## Assets
 

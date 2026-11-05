@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 Issue: #2 Number formatting   Attempt: 1/2
 Branch: loop/issue-2-number-formatting
 
@@ -17,6 +17,8 @@ None yet.
 
 ## Last checks
 Baseline (before any change): import 0, lint 0, format 0, tests 8/8 pass.
+After refactor c2b886d: import exit 0, lint exit 0, format check exit 0, tests exit 0 (17/17 tests, 3604 asserts).
+Refactor commit: c2b886d. Spec set to in-review in the docs commit.
 Criterion 1 red: test fails on assertions ([""] expected to equal ["0"]). The red commit adds a stub `NumberFormat.format` returning "" so the failure is the assertion, not a missing class.
 Criterion 2 red: ["1234"] expected to equal ["1.23K"]. First green attempt gave "100K" for 1e6 (log() lands at 5.999...), so the exponent is corrected against pow(10, e).
 Criterion 3 red: [""] expected to equal ["1.00T"] (SUFFIXES out of bounds at index 4: the sequence stops at M).
