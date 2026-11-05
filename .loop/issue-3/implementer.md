@@ -5,7 +5,7 @@ Branch: loop/issue-3-balance-config
 ## Criteria
 | # | Criterion | Status | Red | Green |
 |---|-----------|--------|-----|-------|
-| 1 | load_default() values match the table, units Pistol, Shotgun, Rocket in order | red | (this commit) | - |
+| 1 | load_default() values match the table, units Pistol, Shotgun, Rocket in order | green | 9290bc2 | (this commit) |
 | 2 | Each formula at n/level 0, 1, 10 with default values | todo | - | - |
 | 3 | tap_damage(1) = 1, unit_dps(any, 0) = 0 | todo | - | - |
 | 4 | Changing a value on an instance changes the formula result | todo | - | - |
@@ -18,3 +18,4 @@ None yet.
 Baseline (before any change): import 0, lint 0, format 0, tests exit 0 (19/19, 4212 asserts).
 Criterion 1 red: tests exit 1; failures are assertions ([0] expected to equal [5], [0] expected to equal [3] "three units").
 The red commit adds declaration-only stubs (exported fields with zero defaults, load_default() returning BalanceConfig.new()) so the failure is the assertion, not a missing class.
+Criterion 1 green: data/balance.tres (saved once with ResourceSaver so the format is Godot's own, script uids added to the ext_resources); load_default() loads DEFAULT_PATH. import 0, lint 0, format 0, tests exit 0 (21/21, 4242 asserts).

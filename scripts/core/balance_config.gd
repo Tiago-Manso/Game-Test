@@ -2,6 +2,8 @@ class_name BalanceConfig
 extends Resource
 ## Every tunable balance number (spec #3, D-008). Values live in data/balance.tres.
 
+const DEFAULT_PATH: String = "res://data/balance.tres"
+
 @export var slot_count: int = 0
 @export var respawn_delay: float = 0.0
 @export var autosave_interval: float = 0.0
@@ -16,4 +18,4 @@ extends Resource
 
 
 static func load_default() -> BalanceConfig:
-	return BalanceConfig.new()
+	return load(DEFAULT_PATH) as BalanceConfig
