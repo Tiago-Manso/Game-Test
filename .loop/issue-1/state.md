@@ -1,15 +1,16 @@
-Status: in progress
+Status: done
 Issue: #1 Project skeleton   Attempt: 1/2
 Branch: loop/issue-1-project-skeleton   PR: #15
-Stage: po-1
+Stage: merged
+Tech-debt issue: #17
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews (2 rounds, 0 blocking)
 - [x] general review (1 round, 0 blocking)
-- [ ] PO go / no-go
-- [ ] merged
+- [x] PO go / no-go (GO, round 1)
+- [x] merged
 
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |
@@ -32,7 +33,7 @@ Stage: po-1
 | 8 | tests | 2 | 2026-11-05 17:10 | done | tests-r2.md |
 | 9 | performance | 2 | 2026-11-05 17:10 | done | performance-r2.md |
 | 10 | general | 1 | 2026-11-05 17:20 | done | general-r1.md |
-| 11 | product-owner | 1 | 2026-11-05 17:35 | started | po-r1.md |
+| 11 | product-owner | 1 | 2026-11-05 17:35 | done (GO) | po-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
