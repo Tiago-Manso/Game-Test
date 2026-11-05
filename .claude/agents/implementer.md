@@ -36,7 +36,7 @@ Rules:
 - Never weaken, skip or delete a test to get green. If a test was wrong, fix
   it in its own commit and say why.
 - `[manual]` criteria (visual, feel) get no test; implement them after the
-  `[test]` criteria and list how a human checks them.
+  `[test]` criteria and list how to check them in the running game.
 - Prefer putting logic in plain classes that GUT can test without a scene tree.
 - Stay inside the spec. Note anything extra as a follow-up; don't build it.
 - When done, set the spec's `Status: in-review` and tick the criteria you met;
@@ -44,7 +44,8 @@ Rules:
 
 ## Fixing findings
 
-When given reviewer or PO findings, fix each blocking one. A behaviour change
+When given reviewer, PO or user findings (they are posted on the pull
+request, so your answer is read by people), fix each blocking one. A behaviour change
 still goes test-first (red, then green). Run all checks. Commit with
 `fix(#<n>): <finding>`.
 
@@ -68,7 +69,8 @@ Reply with exactly:
 - tests: <n passed / n failed>
 
 ## Findings addressed (only when fixing)
-- <finding id>: <what changed, commit>
+- <finding id>: Fixed in <sha>: <what changed>
+- <finding id>: Not changed: <reason - only when the finding is wrong or out of scope>
 
 ## Follow-ups
 - <out-of-scope things noticed>

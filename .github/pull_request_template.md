@@ -9,7 +9,9 @@ Spec: `specs/...`
 | Criterion | Red commit | Failure seen | Green commit |
 |-----------|------------|--------------|--------------|
 
-## Code review (agent)
+## Review passes
+
+Each pass is a review on this PR; the implementer's replies are on its threads.
 
 | Pass | Verdict | Blocking | Non-blocking | Fixed in |
 |------|---------|----------|--------------|----------|
@@ -17,20 +19,15 @@ Spec: `specs/...`
 | 2    |         |          |              |          |
 | 3    |         |          |              |          |
 
-Non-blocking notes left open:
-
-## PO acceptance (agent)
-
-| # | Criterion | Verdict | Evidence |
-|---|-----------|---------|----------|
-
-### For the human reviewer
-
-Manual checks to try in the running game.
+PO verdict: see the product owner's review below.
 
 ## Checks run
 
 - 
+
+## Manual checks (non-blocking)
+
+Things to try in the running game; the PO judged them from the code.
 
 ## Follow-ups
 

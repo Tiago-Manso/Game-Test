@@ -50,10 +50,10 @@ Reply with exactly:
 VERDICT: APPROVE | CHANGES_REQUESTED
 
 ## Blocking
-- [B1] file:line - problem. Why it matters. Suggested fix.
+- [B1] path/to/file.gd:42 - problem. Why it matters. Suggested fix.
 
 ## Non-blocking
-- [N1] file:line - suggestion.
+- [N1] path/to/file.gd:17 - suggestion.
 
 ## Checks (run by reviewer)
 - import / lint / format / tests: pass/fail (details if fail)
@@ -61,6 +61,12 @@ VERDICT: APPROVE | CHANGES_REQUESTED
 ## TDD spot-check
 - <red sha>: failed on "<assertion>" as expected | PROBLEM: <what>
 ```
+
+Each finding is posted as an inline comment on the pull request, so give the
+repo-relative path and a line number **as it is in the branch's version of
+the file**, on a line the diff changed. If a finding isn't about a changed
+line (a missing test, the commit history), write `general` instead of
+`path:line`; it goes in the review body.
 
 `APPROVE` only when the blocking list is empty and all checks pass.
 

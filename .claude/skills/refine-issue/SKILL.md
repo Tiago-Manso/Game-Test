@@ -18,7 +18,7 @@ The argument can be:
 - **An idea in words** -> a new issue.
 - **An issue number** -> refine that issue. Read its body, comments and any spec it links.
 - **Nothing** -> list open issues labelled `needs-spec`, then open issues with no
-  `ready` / `in-progress` / `blocked` label, and ask which one to refine (or a new idea).
+  `ready` / `in-progress` label, and ask which one to refine (or a new idea).
 
 For a `needs-spec` issue, the loop's questions in the comments are your agenda.
 
