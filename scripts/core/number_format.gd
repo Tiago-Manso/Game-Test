@@ -1,12 +1,14 @@
 class_name NumberFormat
 ## Formats game numbers for display (spec #2, D-016).
 
+enum Notation { SUFFIX, SCIENTIFIC }
+
 ## Suffixes for the first powers of 1000; after them come two letters: aa, ab, ... zz.
 const NAMED_SUFFIXES: Array[String] = ["", "K", "M", "B", "T"]
 const LETTER_COUNT: int = 26
 
 
-static func format(value: float) -> String:
+static func format(value: float, _notation: Notation = Notation.SUFFIX) -> String:
 	if value < 1000.0:
 		return str(int(floor(value)))
 	var exponent: int = _decimal_exponent(value)

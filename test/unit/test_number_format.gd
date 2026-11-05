@@ -23,3 +23,8 @@ func test_suffix_sequence_is_right_at_its_boundaries() -> void:
 	# The 27th two-letter suffix, after az. Computed as the spec writes it: the
 	# GDScript literal 1e93 parses one ulp below 10^93, which truly is 999az.
 	assert_eq(NumberFormat.format(1e15 * pow(1000.0, 26)), "1.00ba")
+
+
+func test_scientific_examples_produce_exact_strings() -> void:
+	assert_eq(NumberFormat.format(1234.0, NumberFormat.Notation.SCIENTIFIC), "1.23e3")
+	assert_eq(NumberFormat.format(1000000.0, NumberFormat.Notation.SCIENTIFIC), "1.00e6")
