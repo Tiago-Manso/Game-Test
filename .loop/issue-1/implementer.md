@@ -11,11 +11,11 @@ Branch: loop/issue-1-project-skeleton
 | # | Criterion | Status | Red | Green | Refactor |
 |---|-----------|--------|-----|-------|----------|
 | 1 | test_project_settings.gd: viewport, stretch, aspect, orientation, emulate touch, main scene | green (no refactor needed) | c48cf6f | 4dff6df | - |
-| 2 | test_main_scene.gd: root is Control named Main | green | 586d2e0 | (this commit) | - |
-| 3 | import, lint, format check, test commands exit 0 | todo | - | - | - |
+| 2 | test_main_scene.gd: root is Control named Main | green (no refactor needed) | 586d2e0 | 97aa6b7 | - |
+| 3 | import, lint, format check, test commands exit 0 | green | (observed, no commit: lint exit 1 'Cannot open file scenes') | 97aa6b7 (scenes/ exists; scripts/.gitkeep in 9fc93ad) | - |
 
 ## Manual criteria
-- [manual] window 540x960 with placeholder background, resizing stays portrait: todo
+- [manual] window 540x960 with placeholder background, resizing stays portrait: implemented (this commit) - full-rect ColorRect `Background`, colour (0.12, 0.13, 0.18), mouse_filter ignore. Headless smoke run `--quit-after 30` exits 0.
 
 ## Findings
 (none yet)
@@ -26,8 +26,8 @@ Branch: loop/issue-1-project-skeleton
 ## Red 2 failure seen
 - Expected [<null>] to be anything but NULL: main scene loads as a PackedScene (plus GUT 'Unexpected Errors' from load of the missing file).
 
-## Last checks
-- import: exit 0 (setup)
-- lint: exit 0 (setup)
-- format: exit 0 (setup)
-- test: exit 0, nothing run yet (setup)
+## Last checks (fresh worktree at 97aa6b7, re-run after background)
+- import: exit 0
+- lint: exit 0
+- format: exit 0
+- test: exit 0, 8/8 passed
