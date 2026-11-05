@@ -21,25 +21,31 @@ static func load_default() -> BalanceConfig:
 	return load(DEFAULT_PATH) as BalanceConfig
 
 
-func block_hp(_n: int) -> float:
-	return 0.0
+## HP of the block spawned after `n` blocks have been destroyed.
+func block_hp(n: int) -> float:
+	return block_base_hp * pow(block_hp_growth, n)
 
 
-func block_gold(_n: int) -> float:
-	return 0.0
+## Gold paid by the block spawned after `n` blocks have been destroyed.
+func block_gold(n: int) -> float:
+	return block_base_gold * pow(block_gold_growth, n)
 
 
-func tap_damage(_level: int) -> float:
-	return 0.0
+## Tap damage at `level` (level starts at 1).
+func tap_damage(level: int) -> float:
+	return tap_base_damage * level
 
 
-func tap_upgrade_cost(_level: int) -> float:
-	return 0.0
+## Cost to raise tap damage from `level` to `level + 1`.
+func tap_upgrade_cost(level: int) -> float:
+	return tap_base_cost * pow(tap_cost_growth, level - 1)
 
 
-func unit_dps(_unit: UnitConfig, _level: int) -> float:
-	return 0.0
+## Damage per second of `unit` at `level` (level 0 = not owned).
+func unit_dps(unit: UnitConfig, level: int) -> float:
+	return unit.base_dps * level
 
 
-func unit_cost(_unit: UnitConfig, _level: int) -> float:
-	return 0.0
+## Cost to raise `unit` from `level` to `level + 1`.
+func unit_cost(unit: UnitConfig, level: int) -> float:
+	return unit.base_cost * pow(unit.cost_growth, level)
