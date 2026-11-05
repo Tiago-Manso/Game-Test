@@ -51,5 +51,9 @@ func unit_cost(unit: UnitConfig, level: int) -> float:
 	return unit.base_cost * pow(unit.cost_growth, level)
 
 
-func unit_by_id(_id: StringName) -> UnitConfig:
+## The unit with this `id`, or null if there is none.
+func unit_by_id(id: StringName) -> UnitConfig:
+	for unit: UnitConfig in units:
+		if unit.id == id:
+			return unit
 	return null
