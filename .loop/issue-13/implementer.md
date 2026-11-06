@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 
 # Implementer log - issue #13 CI workflow (attempt 1/2)
 
@@ -21,5 +21,11 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 ## Findings
 None yet.
 
-## Last checks
-- tools tests: test_check_sh 3 passed; test_ci_workflow 5 passed; test_loop_docs 2 passed
+## Last checks (head before this commit: 23e6b87)
+- import: pass
+- lint: pass (gdlint scenes scripts test)
+- format: pass (7 files unchanged)
+- GUT: 33/33 passed
+- tools/check.sh: exit 0, all four steps named
+- tools tests (`python3 -m unittest discover -s tools/tests`): 10/10 passed
+- [manual] `checks` workflow on the PR: for the orchestrator
