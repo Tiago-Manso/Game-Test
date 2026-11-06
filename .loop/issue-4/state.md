@@ -1,13 +1,13 @@
 Status: in progress
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots   PR: #23
-Stage: general-review-1
+Stage: po-r1
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews (quality/security/performance 2 rounds, tests 3 rounds; T2-I1 fixed)
-- [ ] general review
+- [x] general review (1 round, 0 blocking)
 - [ ] PO go / no-go
 - [ ] merged
 
@@ -33,7 +33,8 @@ Stage: general-review-1
 | 9 | performance | 2 | 2026-11-06 11:10 | done | performance-r2.md |
 | 10 | implementer (fixes r2) | 2 | 2026-11-06 11:14 | done | implementer.md |
 | 11 | tests | 3 | 2026-11-06 11:14 | done | tests-r3.md |
-| 12 | general | 1 | 2026-11-06 11:16 | started | general-r1.md |
+| 12 | general | 1 | 2026-11-06 11:16 | done | general-r1.md |
+| 13 | product-owner | 1 | 2026-11-06 11:17 | started | po-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
@@ -48,6 +49,7 @@ Stage: general-review-1
 | Q2-m1 | quality | minor | scripts/core/block_field.gd:93 | logged | - |
 | T2-I1 | tests | important | test/unit/test_block_field.gd:41 | fixed | dda7171 |
 | T2-m1 | tests | minor | scenes/field/field.gd:58 | logged | - |
+| G1-m1 | general | minor | scripts/core/block_field.gd:14 | logged | - |
 
 ## Tech debt (Minor and deferred Important)
 - Q1-m1 (minor) scripts/core/block_field.gd:48 - `hp(-1)`/`max_hp(-1)`/`gold(-1)` return slot 4's value (packed arrays wrap negative indices); `hp(5)` raises out-of-bounds. Fix: guard like `has_block` (return 0.0) or assert.
@@ -59,3 +61,4 @@ Stage: general-review-1
 - T1-m2 (minor) test/unit/test_block_field.gd:134 - test covers two behaviours (full field ignores tick; non-positive/NaN delta keeps countdown) and ends asserting a respawn. Fix: split into two tests.
 - Q2-m1 (minor) scripts/core/block_field.gd:93 - `tick()` emits `block_spawned` mid-loop; a listener that calls `damage()` and breaks a higher slot j gets j's fresh countdown reduced by this tick's delta (respawns delta early). No such listener today; #7 could add one. Fix: collect finished slots, spawn/emit after the loop, or document that listeners must not damage during `block_spawned`.
 - T2-m1 (minor) scenes/field/field.gd:58 - "fixed positions" / hidden block keeps its place is untested; hiding the whole cell (others shift) would pass. Fix: record `block_view(1..4).get_global_rect()` after layout, break slot 0, assert unchanged; optionally assert row y's.
+- G1-m1 (minor) scripts/core/block_field.gd:14 - `destroyed_count` is a publicly writable var; spec lists it as read access and A-02 says scenes never change game state; an assignment would desync HP/gold scaling from blocks broken. Fix: private `_destroyed_count` with read-only getter (constructor still sets it for #8).
