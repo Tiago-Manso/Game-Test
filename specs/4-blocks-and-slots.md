@@ -1,7 +1,7 @@
 # Blocks and slots
 
 - Issue: #4
-- Status: ready
+- Status: done
 
 ## Context
 
