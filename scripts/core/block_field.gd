@@ -31,8 +31,9 @@ func slot_count() -> int:
 	return _occupied.size()
 
 
+## False for an empty slot and for an index outside 0 .. slot_count() - 1.
 func has_block(slot: int) -> bool:
-	return _occupied[slot]
+	return slot >= 0 and slot < _occupied.size() and _occupied[slot]
 
 
 func hp(slot: int) -> float:
@@ -47,8 +48,11 @@ func gold(slot: int) -> float:
 	return _gold[slot]
 
 
-## Lowers the block's HP in `slot`; at HP <= 0 the block breaks.
+## Lowers the block's HP in `slot`; at HP <= 0 the block breaks. Overkill is lost.
+## Does nothing for an empty or invalid slot, or an amount that isn't > 0 (NaN included).
 func damage(slot: int, amount: float) -> void:
+	if not (amount > 0.0) or not has_block(slot):
+		return
 	_hp[slot] -= amount
 	if _hp[slot] > 0.0:
 		block_damaged.emit(slot, _hp[slot])
