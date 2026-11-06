@@ -50,3 +50,48 @@ func test_overkill_breaks_the_block_and_spares_the_others() -> void:
 	assert_signal_not_emitted(_field, "block_damaged")
 	for slot: int in range(1, 5):
 		assert_eq(_field.hp(slot), 10.0, "slot %d untouched" % slot)
+
+
+func test_damage_to_an_empty_slot_changes_nothing() -> void:
+	_field.damage(3, 10.0)
+	var before: Array = _snapshot()
+	watch_signals(_field)
+	_field.damage(3, 5.0)
+	assert_eq(_snapshot(), before, "field unchanged")
+	_assert_no_signals()
+
+
+func test_damage_to_an_invalid_slot_changes_nothing() -> void:
+	var before: Array = _snapshot()
+	watch_signals(_field)
+	for slot: int in [-1, 5, 100]:
+		_field.damage(slot, 5.0)
+		assert_false(_field.has_block(slot), "invalid slot %d has no block" % slot)
+	assert_eq(_snapshot(), before, "field unchanged")
+	_assert_no_signals()
+
+
+func test_zero_negative_or_nan_damage_changes_nothing() -> void:
+	var before: Array = _snapshot()
+	watch_signals(_field)
+	for amount: float in [0.0, -5.0, -INF, NAN]:
+		_field.damage(0, amount)
+	assert_eq(_snapshot(), before, "field unchanged")
+	_assert_no_signals()
+
+
+## Every slot's [has_block, hp, max_hp, gold], then destroyed_count.
+func _snapshot() -> Array:
+	var result: Array = []
+	for slot: int in _field.slot_count():
+		result.append(
+			[_field.has_block(slot), _field.hp(slot), _field.max_hp(slot), _field.gold(slot)]
+		)
+	result.append(_field.destroyed_count)
+	return result
+
+
+func _assert_no_signals() -> void:
+	assert_signal_not_emitted(_field, "block_damaged")
+	assert_signal_not_emitted(_field, "block_broken")
+	assert_signal_not_emitted(_field, "block_spawned")
