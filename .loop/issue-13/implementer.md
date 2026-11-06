@@ -13,7 +13,7 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 | 2 | check.sh exits non-zero, names failing step | green | none: passed on first run (behaviour came with 57950fe); mutation check - removing the failure branch from check.sh gives `AssertionError: 0 == 0` in both tests | 57950fe (test: this commit) |
 | 3 | ci.yml valid YAML, triggers, job `checks`, steps | green | ecc68ac | (this commit) |
 | 4 | [manual] `checks` green on the PR | orchestrator | - | - |
-| 5 | CLAUDE.md lists check.sh; implement-next Step 10 needs green `checks` | todo | - | - |
+| 5 | CLAUDE.md lists check.sh; implement-next Step 10 needs green `checks` | red | (this commit) | - |
 
 ## Notes
 - 414346b: untracked `tools/tests/__pycache__` committed by mistake; `__pycache__/` now in .gitignore.
@@ -22,4 +22,4 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 None yet.
 
 ## Last checks
-- tools tests: test_check_sh 3 passed; test_ci_workflow 5 passed
+- tools tests: test_check_sh 3 passed; test_ci_workflow 5 passed; test_loop_docs 2 failed (red: regex `run every check.*tools/check.sh` not found; '`checks`' not found in Step 10)
