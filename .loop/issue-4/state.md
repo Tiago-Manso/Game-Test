@@ -1,12 +1,12 @@
 Status: in progress
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots   PR: #23
-Stage: review-round-3
+Stage: general-review-1
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
-- [ ] specialist reviews (round 2: quality, security, performance done; tests 1 blocking)
+- [x] specialist reviews (quality/security/performance 2 rounds, tests 3 rounds; T2-I1 fixed)
 - [ ] general review
 - [ ] PO go / no-go
 - [ ] merged
@@ -16,7 +16,7 @@ Stage: review-round-3
 |-------------|--------|-------------------|------|
 | quality     | 2      | 0                 | yes  |
 | security    | 2      | 0                 | yes  |
-| tests       | 2      | 1                 | no   |
+| tests       | 3      | 0                 | yes  |
 | performance | 2      | 0                 | yes  |
 
 ## Agent runs
@@ -32,7 +32,8 @@ Stage: review-round-3
 | 8 | tests | 2 | 2026-11-06 11:10 | done | tests-r2.md |
 | 9 | performance | 2 | 2026-11-06 11:10 | done | performance-r2.md |
 | 10 | implementer (fixes r2) | 2 | 2026-11-06 11:14 | done | implementer.md |
-| 11 | tests | 3 | 2026-11-06 11:14 | started | tests-r3.md |
+| 11 | tests | 3 | 2026-11-06 11:14 | done | tests-r3.md |
+| 12 | general | 1 | 2026-11-06 11:16 | started | general-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
