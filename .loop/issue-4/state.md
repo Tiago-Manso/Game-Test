@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots   PR: #23
-Stage: review-round-2
+Stage: review-round-3
 
 ## Stages
 - [x] claimed
@@ -31,6 +31,8 @@ Stage: review-round-2
 | 7 | security | 2 | 2026-11-06 11:10 | done | security-r2.md |
 | 8 | tests | 2 | 2026-11-06 11:10 | done | tests-r2.md |
 | 9 | performance | 2 | 2026-11-06 11:10 | done | performance-r2.md |
+| 10 | implementer (fixes r2) | 2 | 2026-11-06 11:14 | done | implementer.md |
+| 11 | tests | 3 | 2026-11-06 11:14 | started | tests-r3.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
@@ -43,7 +45,7 @@ Stage: review-round-2
 | T1-m1 | tests | minor | test/unit/test_block_field.gd:55 | logged | - |
 | T1-m2 | tests | minor | test/unit/test_block_field.gd:134 | logged | - |
 | Q2-m1 | quality | minor | scripts/core/block_field.gd:93 | logged | - |
-| T2-I1 | tests | important | test/unit/test_block_field.gd:41 | open | - |
+| T2-I1 | tests | important | test/unit/test_block_field.gd:41 | fixed | dda7171 |
 | T2-m1 | tests | minor | scenes/field/field.gd:58 | logged | - |
 
 ## Tech debt (Minor and deferred Important)
