@@ -1,14 +1,14 @@
 Status: in progress
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots   PR: #23
-Stage: po-r1
+Stage: merging
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews (quality/security/performance 2 rounds, tests 3 rounds; T2-I1 fixed)
 - [x] general review (1 round, 0 blocking)
-- [ ] PO go / no-go
+- [x] PO go / no-go (GO, round 1)
 - [ ] merged
 
 ## Specialist reviewers
@@ -34,7 +34,7 @@ Stage: po-r1
 | 10 | implementer (fixes r2) | 2 | 2026-11-06 11:14 | done | implementer.md |
 | 11 | tests | 3 | 2026-11-06 11:14 | done | tests-r3.md |
 | 12 | general | 1 | 2026-11-06 11:16 | done | general-r1.md |
-| 13 | product-owner | 1 | 2026-11-06 11:17 | started | po-r1.md |
+| 13 | product-owner | 1 | 2026-11-06 11:17 | done (GO) | po-r1.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
