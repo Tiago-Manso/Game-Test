@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots   PR: #23
-Stage: review-round-1
+Stage: review-round-2
 
 ## Stages
 - [x] claimed
@@ -27,6 +27,10 @@ Stage: review-round-1
 | 3 | security | 1 | 2026-11-06 11:06 | done | security-r1.md |
 | 4 | tests | 1 | 2026-11-06 11:06 | done | tests-r1.md |
 | 5 | performance | 1 | 2026-11-06 11:06 | done | performance-r1.md |
+| 6 | quality | 2 | 2026-11-06 11:10 | started | quality-r2.md |
+| 7 | security | 2 | 2026-11-06 11:10 | started | security-r2.md |
+| 8 | tests | 2 | 2026-11-06 11:10 | started | tests-r2.md |
+| 9 | performance | 2 | 2026-11-06 11:10 | started | performance-r2.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
