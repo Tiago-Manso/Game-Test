@@ -1,8 +1,37 @@
-# Placeholder until the CI workflow is written (issue #13).
+# Runs every check from CLAUDE.md (tools/check.sh) on every PR and on main.
+# The job is called `checks` so it can be made a required status check.
 name: CI
-on: workflow_dispatch
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
 jobs:
-  placeholder:
+  checks:
+    name: checks
     runs-on: ubuntu-latest
     steps:
-      - run: echo "not implemented"
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Put ~/.local/bin on PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Cache Godot
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/bin/godot
+          key: godot-${{ runner.os }}-${{ hashFiles('.godot-version') }}
+
+      - name: Install Godot and gdtoolkit
+        run: tools/install-godot.sh
+
+      - name: Run checks
+        run: tools/check.sh
