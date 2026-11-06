@@ -70,6 +70,16 @@ func damage(slot: int, amount: float) -> void:
 	block_broken.emit(slot, _gold[slot])
 
 
+## The slot whose block has the lowest current HP (lowest index on ties), or -1
+## when every slot is empty. The team's target (D-013).
+func lowest_hp_slot() -> int:
+	var best: int = -1
+	for slot: int in _occupied.size():
+		if _occupied[slot] and (best == -1 or _hp[slot] < _hp[best]):
+			best = slot
+	return best
+
+
 ## Advances every respawn countdown by `delta` seconds; a slot whose countdown
 ## ends gets a new block. Only the simulation clock calls this (A-03).
 func tick(delta: float) -> void:
@@ -89,7 +99,3 @@ func _spawn(slot: int) -> void:
 	_max_hp[slot] = _config.block_hp(destroyed_count)
 	_hp[slot] = _max_hp[slot]
 	_gold[slot] = _config.block_gold(destroyed_count)
-
-
-func lowest_hp_slot() -> int:
-	return -2
