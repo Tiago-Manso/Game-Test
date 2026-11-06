@@ -352,7 +352,9 @@ Only after the PO's **GO**:
 3. Set `state.md` to `Status: done`, stage `merged`; update the PR body with
    the final TDD log, a table of review rounds per agent (rounds, Critical /
    Important fixed, deferred, Minor logged) and the tech-debt issue link. Commit, push.
-4. Mark the PR ready for review (no longer draft), post
+4. The `checks` CI run on the PR head must have succeeded; if it is still
+   running, wait for it. A red run goes back to the implementer like a failed
+   local check. Then mark the PR ready for review (no longer draft), post
    `**Orchestrator:** merging - PO GO, checks green.`, and squash-merge it
    (`merge_pull_request`, method `squash`, title `<issue title> (#<number>)`).
    `Closes #<number>` closes the issue; issues that depend on it unlock.

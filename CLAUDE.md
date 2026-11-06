@@ -29,6 +29,7 @@ The implementation loop runs install, import, lint and test before every PR.
 - Lint: `gdlint scenes scripts test`
 - Format check: `gdformat --check scenes scripts test`
 - Test: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gexit`
+- Run every check: `tools/check.sh`
 - Run the game: `godot --path .`
 
 If Godot can't be installed (e.g. network blocked), the loop must not open or

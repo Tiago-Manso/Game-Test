@@ -1,7 +1,7 @@
 # CI workflow
 
 - Issue: #13
-- Status: ready
+- Status: done
 
 ## Context
 

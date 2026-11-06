@@ -1,0 +1,159 @@
+extends GutTest
+## BalanceConfig: every tunable number and the curves that use them (spec #3, D-008, D-020).
+
+## Formula results are compared within this fraction of the expected value.
+const RELATIVE_TOLERANCE: float = 1e-9
+
+var _config: BalanceConfig
+
+
+func before_each() -> void:
+	_config = BalanceConfig.load_default()
+
+
+func test_load_default_values_match_the_spec_table() -> void:
+	assert_not_null(_config, "default config loads")
+	if _config == null:
+		return
+	assert_eq(_config.slot_count, 5)
+	assert_eq(_config.respawn_delay, 0.5)
+	assert_eq(_config.autosave_interval, 10.0)
+	assert_eq(_config.block_base_hp, 10.0)
+	assert_eq(_config.block_hp_growth, 1.05)
+	assert_eq(_config.block_base_gold, 1.0)
+	assert_eq(_config.block_gold_growth, 1.045)
+	assert_eq(_config.tap_base_damage, 1.0)
+	assert_eq(_config.tap_base_cost, 5.0)
+	assert_eq(_config.tap_cost_growth, 1.07)
+
+
+func test_load_default_has_pistol_shotgun_rocket_in_order() -> void:
+	var units: Array[UnitConfig] = _config.units
+	assert_eq(units.size(), 3, "three units")
+	if units.size() != 3:
+		return
+	_assert_unit(units[0], &"pistol", "Pistol", 10.0, 1.07, 1.0)
+	_assert_unit(units[1], &"shotgun", "Shotgun", 100.0, 1.08, 8.0)
+	_assert_unit(units[2], &"rocket", "Rocket", 1000.0, 1.09, 60.0)
+
+
+## Each caller gets its own copy: changing one, units included, leaves the next untouched.
+func test_load_default_returns_an_independent_copy_each_time() -> void:
+	var first: BalanceConfig = BalanceConfig.load_default()
+	first.respawn_delay = 99.0
+	first.units[0].base_dps = 77.0
+	var second: BalanceConfig = BalanceConfig.load_default()
+	assert_ne(second, first, "a different config object")
+	assert_ne(second.units[0], first.units[0], "a different unit object")
+	assert_eq(second.respawn_delay, 0.5, "respawn_delay from the file")
+	assert_eq(second.units[0].base_dps, 1.0, "pistol base_dps from the file")
+
+
+func test_block_hp_grows_exponentially_from_the_defaults() -> void:
+	_assert_close(_config.block_hp(0), 10.0, "block_hp(0)")
+	_assert_close(_config.block_hp(1), 10.5, "block_hp(1)")
+	_assert_close(_config.block_hp(10), 16.2889462678, "block_hp(10)")
+
+
+func test_block_gold_grows_exponentially_from_the_defaults() -> void:
+	_assert_close(_config.block_gold(0), 1.0, "block_gold(0)")
+	_assert_close(_config.block_gold(1), 1.045, "block_gold(1)")
+	_assert_close(_config.block_gold(10), 1.55296942173, "block_gold(10)")
+
+
+## Tap level starts at 1, so the tap formulas are checked at levels 1, 2 and 10.
+func test_tap_damage_grows_linearly_from_the_defaults() -> void:
+	_assert_close(_config.tap_damage(1), 1.0, "tap_damage(1)")
+	_assert_close(_config.tap_damage(2), 2.0, "tap_damage(2)")
+	_assert_close(_config.tap_damage(10), 10.0, "tap_damage(10)")
+
+
+func test_tap_upgrade_cost_grows_exponentially_from_the_defaults() -> void:
+	_assert_close(_config.tap_upgrade_cost(1), 5.0, "tap_upgrade_cost(1)")
+	_assert_close(_config.tap_upgrade_cost(2), 5.35, "tap_upgrade_cost(2)")
+	_assert_close(_config.tap_upgrade_cost(10), 9.1922960621, "tap_upgrade_cost(10)")
+
+
+func test_unit_dps_grows_linearly_from_the_defaults() -> void:
+	var units: Array[UnitConfig] = _config.units
+	_assert_close(_config.unit_dps(units[0], 1), 1.0, "pistol dps(1)")
+	_assert_close(_config.unit_dps(units[0], 10), 10.0, "pistol dps(10)")
+	_assert_close(_config.unit_dps(units[1], 1), 8.0, "shotgun dps(1)")
+	_assert_close(_config.unit_dps(units[1], 10), 80.0, "shotgun dps(10)")
+	_assert_close(_config.unit_dps(units[2], 1), 60.0, "rocket dps(1)")
+	_assert_close(_config.unit_dps(units[2], 10), 600.0, "rocket dps(10)")
+
+
+func test_unit_cost_grows_exponentially_from_the_defaults() -> void:
+	var units: Array[UnitConfig] = _config.units
+	_assert_close(_config.unit_cost(units[0], 0), 10.0, "pistol cost(0)")
+	_assert_close(_config.unit_cost(units[0], 1), 10.7, "pistol cost(1)")
+	_assert_close(_config.unit_cost(units[0], 10), 19.6715135729, "pistol cost(10)")
+	_assert_close(_config.unit_cost(units[1], 0), 100.0, "shotgun cost(0)")
+	_assert_close(_config.unit_cost(units[1], 1), 108.0, "shotgun cost(1)")
+	_assert_close(_config.unit_cost(units[1], 10), 215.892499727, "shotgun cost(10)")
+	_assert_close(_config.unit_cost(units[2], 0), 1000.0, "rocket cost(0)")
+	_assert_close(_config.unit_cost(units[2], 1), 1090.0, "rocket cost(1)")
+	_assert_close(_config.unit_cost(units[2], 10), 2367.36367459, "rocket cost(10)")
+
+
+func test_tap_damage_at_level_1_is_1() -> void:
+	assert_eq(_config.tap_damage(1), 1.0)
+
+
+func test_unit_dps_at_level_0_is_0_for_any_unit() -> void:
+	var units: Array[UnitConfig] = _config.units.duplicate()
+	var custom: UnitConfig = UnitConfig.new()
+	custom.id = &"custom"
+	custom.base_dps = 123.0
+	units.append(custom)
+	for unit: UnitConfig in units:
+		assert_eq(_config.unit_dps(unit, 0), 0.0, "%s dps at level 0" % unit.id)
+
+
+func test_changing_instance_values_changes_every_formula() -> void:
+	var config: BalanceConfig = BalanceConfig.new()
+	config.block_base_hp = 2.0
+	config.block_hp_growth = 3.0
+	config.block_base_gold = 5.0
+	config.block_gold_growth = 2.0
+	config.tap_base_damage = 7.0
+	config.tap_base_cost = 4.0
+	config.tap_cost_growth = 3.0
+	var unit: UnitConfig = UnitConfig.new()
+	unit.base_cost = 6.0
+	unit.cost_growth = 2.0
+	unit.base_dps = 9.0
+	assert_eq(config.block_hp(2), 18.0, "block_hp uses block_base_hp and block_hp_growth")
+	assert_eq(config.block_gold(3), 40.0, "block_gold uses block_base_gold and block_gold_growth")
+	assert_eq(config.tap_damage(3), 21.0, "tap_damage uses tap_base_damage")
+	assert_eq(config.tap_upgrade_cost(3), 36.0, "tap_upgrade_cost uses tap_base_cost and growth")
+	assert_eq(config.unit_dps(unit, 2), 18.0, "unit_dps uses the unit's base_dps")
+	assert_eq(config.unit_cost(unit, 3), 48.0, "unit_cost uses the unit's base_cost and growth")
+
+
+func test_unit_by_id_finds_shotgun() -> void:
+	var unit: UnitConfig = _config.unit_by_id(&"shotgun")
+	assert_not_null(unit, "shotgun found")
+	assert_same(unit, _config.units[1], "the Shotgun entry itself")
+
+
+func test_unit_by_id_returns_null_for_unknown_id() -> void:
+	assert_null(_config.unit_by_id(&"laser"))
+
+
+func _assert_close(actual: float, expected: float, label: String) -> void:
+	assert_almost_eq(actual, expected, absf(expected) * RELATIVE_TOLERANCE, label)
+
+
+func _assert_unit(
+	unit: UnitConfig, id: StringName, display_name: String, cost: float, growth: float, dps: float
+) -> void:
+	assert_not_null(unit, "unit %s is set" % id)
+	if unit == null:
+		return
+	assert_eq(unit.id, id)
+	assert_eq(unit.display_name, display_name)
+	assert_eq(unit.base_cost, cost, "%s base_cost" % id)
+	assert_eq(unit.cost_growth, growth, "%s cost_growth" % id)
+	assert_eq(unit.base_dps, dps, "%s base_dps" % id)

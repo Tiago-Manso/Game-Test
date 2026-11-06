@@ -1,0 +1,106 @@
+class_name BlockField
+extends RefCounted
+## The playfield's blocks in fixed slots (spec #4, D-009, D-014, D-015, architecture 4.2).
+
+signal block_damaged(slot: int, hp: float)
+signal block_broken(slot: int, gold: float)
+signal block_spawned(slot: int)
+
+## Countdowns within this many seconds of zero count as done, so float steps
+## (e.g. 30 x 1/60 s) respawn on the step that reaches respawn_delay.
+const TIME_EPSILON: float = 1e-9
+
+## Blocks destroyed so far; new blocks take HP and gold from it (D-015).
+var destroyed_count: int = 0
+
+var _config: BalanceConfig
+var _occupied: Array[bool] = []
+var _hp: PackedFloat64Array = PackedFloat64Array()
+var _max_hp: PackedFloat64Array = PackedFloat64Array()
+var _gold: PackedFloat64Array = PackedFloat64Array()
+var _respawn_left: PackedFloat64Array = PackedFloat64Array()
+
+
+## Every slot starts with a block built from `initial_destroyed_count`.
+func _init(config: BalanceConfig, initial_destroyed_count: int = 0) -> void:
+	_config = config
+	destroyed_count = initial_destroyed_count
+	var count: int = config.slot_count
+	_occupied.resize(count)
+	_hp.resize(count)
+	_max_hp.resize(count)
+	_gold.resize(count)
+	_respawn_left.resize(count)
+	for slot: int in count:
+		_spawn(slot)
+
+
+func slot_count() -> int:
+	return _occupied.size()
+
+
+## False for an empty slot and for an index outside 0 .. slot_count() - 1.
+func has_block(slot: int) -> bool:
+	return slot >= 0 and slot < _occupied.size() and _occupied[slot]
+
+
+## Current HP of the block in `slot` (0 while the slot is empty).
+func hp(slot: int) -> float:
+	return _hp[slot]
+
+
+## HP the block in `slot` spawned with.
+func max_hp(slot: int) -> float:
+	return _max_hp[slot]
+
+
+## Gold the block in `slot` pays when it breaks.
+func gold(slot: int) -> float:
+	return _gold[slot]
+
+
+## Lowers the block's HP in `slot`; at HP <= 0 the block breaks. Overkill is lost.
+## Does nothing for an empty or invalid slot, or an amount that isn't > 0 (NaN included).
+func damage(slot: int, amount: float) -> void:
+	if not (amount > 0.0) or not has_block(slot):
+		return
+	_hp[slot] -= amount
+	if _hp[slot] > 0.0:
+		block_damaged.emit(slot, _hp[slot])
+		return
+	_occupied[slot] = false
+	_hp[slot] = 0.0
+	_respawn_left[slot] = _config.respawn_delay
+	destroyed_count += 1
+	block_broken.emit(slot, _gold[slot])
+
+
+## The slot whose block has the lowest current HP (lowest index on ties), or -1
+## when every slot is empty. The team's target (D-013).
+func lowest_hp_slot() -> int:
+	var best: int = -1
+	for slot: int in _occupied.size():
+		if _occupied[slot] and (best == -1 or _hp[slot] < _hp[best]):
+			best = slot
+	return best
+
+
+## Advances every respawn countdown by `delta` seconds; a slot whose countdown
+## ends gets a new block. Only the simulation clock calls this (A-03).
+func tick(delta: float) -> void:
+	if not (delta > 0.0):
+		return
+	for slot: int in _occupied.size():
+		if _occupied[slot]:
+			continue
+		_respawn_left[slot] -= delta
+		if _respawn_left[slot] <= TIME_EPSILON:
+			_spawn(slot)
+			block_spawned.emit(slot)
+
+
+func _spawn(slot: int) -> void:
+	_occupied[slot] = true
+	_max_hp[slot] = _config.block_hp(destroyed_count)
+	_hp[slot] = _max_hp[slot]
+	_gold[slot] = _config.block_gold(destroyed_count)
