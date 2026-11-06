@@ -10,6 +10,7 @@ signal block_spawned(slot: int)
 ## (e.g. 30 x 1/60 s) respawn on the step that reaches respawn_delay.
 const TIME_EPSILON: float = 1e-9
 
+## Blocks destroyed so far; new blocks take HP and gold from it (D-015).
 var destroyed_count: int = 0
 
 var _config: BalanceConfig
@@ -20,6 +21,7 @@ var _gold: PackedFloat64Array = PackedFloat64Array()
 var _respawn_left: PackedFloat64Array = PackedFloat64Array()
 
 
+## Every slot starts with a block built from `initial_destroyed_count`.
 func _init(config: BalanceConfig, initial_destroyed_count: int = 0) -> void:
 	_config = config
 	destroyed_count = initial_destroyed_count
@@ -42,14 +44,17 @@ func has_block(slot: int) -> bool:
 	return slot >= 0 and slot < _occupied.size() and _occupied[slot]
 
 
+## Current HP of the block in `slot` (0 while the slot is empty).
 func hp(slot: int) -> float:
 	return _hp[slot]
 
 
+## HP the block in `slot` spawned with.
 func max_hp(slot: int) -> float:
 	return _max_hp[slot]
 
 
+## Gold the block in `slot` pays when it breaks.
 func gold(slot: int) -> float:
 	return _gold[slot]
 
