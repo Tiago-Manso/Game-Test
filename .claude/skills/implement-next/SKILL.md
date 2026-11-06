@@ -319,6 +319,9 @@ Only after the PO's **GO**:
 1. Merge `origin/main` into the branch if it moved; run every check from
    `CLAUDE.md` yourself. Anything red -> the implementer fixes it, then one
    general review round and the PO again, as for a NO-GO.
+   The `checks` CI run on the PR head must have succeeded; if it is still
+   running, wait for it. A red run goes back to the implementer like a failed
+   local check.
 2. If "Tech debt" in `state.md` isn't empty, open one issue
    `Tech debt from #<n>: <issue title>` labelled `tech-debt` (never `ready`),
    linking the PR, with one checklist item per finding - ID, severity,
