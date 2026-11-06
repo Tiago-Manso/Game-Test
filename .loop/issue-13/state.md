@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: #22
-Stage: general-review-1-fixes
+Stage: general-review-2
 
 ## Stages
 - [x] claimed
@@ -33,7 +33,8 @@ Stage: general-review-1-fixes
 | 9 | tests | 2 | 2026-11-06 | done | tests-r2.md |
 | 10 | performance | 2 | 2026-11-06 | done | performance-r2.md |
 | 11 | general | 1 | 2026-11-06 | done | general-r1.md |
-| 12 | implementer | fixes g1 | 2026-11-06 | started | implementer.md |
+| 12 | implementer | fixes g1 | 2026-11-06 | done | implementer.md |
+| 13 | general | 2 | 2026-11-06 | started | general-r2.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |
@@ -53,7 +54,7 @@ Stage: general-review-1-fixes
 | P1-m2 | performance | minor | .github/workflows/ci.yml:16 | logged | - |
 | P1-m3 | performance | minor | .github/workflows/ci.yml:20 | logged | - |
 | S2-m1 | security | minor | .claude/skills/implement-next/SKILL.md:323 | logged | - |
-| G1-I1 | general | important | .claude/skills/implement-next/SKILL.md:322 | open | - |
+| G1-I1 | general | important | .claude/skills/implement-next/SKILL.md:322 | fixed | ec61318 |
 | G1-m1 | general | minor | .claude/skills/implement-next/SKILL.md:322 | logged | - |
 
 ## Tech debt (Minor and deferred Important)
