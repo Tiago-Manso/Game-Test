@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: #22
-Stage: general-review-1
+Stage: general-review-1-fixes
 
 ## Stages
 - [x] claimed
@@ -32,7 +32,8 @@ Stage: general-review-1
 | 8 | security | 2 | 2026-11-06 | done | security-r2.md |
 | 9 | tests | 2 | 2026-11-06 | done | tests-r2.md |
 | 10 | performance | 2 | 2026-11-06 | done | performance-r2.md |
-| 11 | general | 1 | 2026-11-06 | started | general-r1.md |
+| 11 | general | 1 | 2026-11-06 | done | general-r1.md |
+| 12 | implementer | fixes g1 | 2026-11-06 | started | implementer.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |
@@ -52,6 +53,8 @@ Stage: general-review-1
 | P1-m2 | performance | minor | .github/workflows/ci.yml:16 | logged | - |
 | P1-m3 | performance | minor | .github/workflows/ci.yml:20 | logged | - |
 | S2-m1 | security | minor | .claude/skills/implement-next/SKILL.md:323 | logged | - |
+| G1-I1 | general | important | .claude/skills/implement-next/SKILL.md:322 | open | - |
+| G1-m1 | general | minor | .claude/skills/implement-next/SKILL.md:322 | logged | - |
 
 ## Tech debt (Minor and deferred Important)
 - T1-I1 (important, deferred) general - tools/tests (test_ci_workflow, test_loop_docs) not run by CI or listed in CLAUDE.md; reason: spec fixes the ci.yml steps and the CLAUDE.md edit, so wiring them in needs a follow-up spec.
@@ -69,3 +72,4 @@ Stage: general-review-1
 - P1-m2 (minor) .github/workflows/ci.yml:16 - no timeout-minutes (dup of Q1-m2/S1-m3).
 - P1-m3 (minor) .github/workflows/ci.yml:20 - gdtoolkit pip-installed every run, not cached.
 - S2-m1 (minor) .claude/skills/implement-next/SKILL.md:323 - "wait for it" has no time limit and no rule for a missing `checks` run on the head SHA; cap the wait (~30 min) and treat timeout/no run as red or an environment stop.
+- G1-m1 (minor) .claude/skills/implement-next/SKILL.md:322 - "wait for it" doesn't say how to check the run; `gh pr checks` (GraphQL) 403s here; name the REST call `gh api repos/{owner}/{repo}/commits/<sha>/check-runs`.
