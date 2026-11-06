@@ -19,7 +19,9 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 - 414346b: untracked `tools/tests/__pycache__` committed by mistake; `__pycache__/` now in .gitignore.
 
 ## Findings
-None yet.
+| ID | Severity | Outcome |
+|----|----------|---------|
+| T1-I1 | important | Deferred: nothing runs tools/tests automatically. Fixing it means adding a CI step and a CLAUDE.md command. The spec fixes the ci.yml steps (checkout, Python, install-godot.sh, check.sh) and the CLAUDE.md edit (only `tools/check.sh`), and this run must keep those edits to exactly the spec. Wiring tools/tests in needs a spec decision and belongs in a follow-up issue. |
 
 ## Last checks (head before this commit: 23e6b87)
 - import: pass
