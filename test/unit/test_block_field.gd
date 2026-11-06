@@ -147,6 +147,32 @@ func test_tick_without_empty_slots_or_with_non_positive_delta_does_nothing() -> 
 	assert_signal_emit_count(_field, "block_spawned", 1)
 
 
+func test_lowest_hp_slot_returns_the_block_with_the_lowest_hp() -> void:
+	_field.damage(1, 2.0)
+	_field.damage(3, 6.0)
+	_field.damage(4, 5.0)
+	assert_eq(_field.lowest_hp_slot(), 3, "slot 3 has 4 hp")
+
+
+func test_lowest_hp_slot_picks_the_lowest_index_on_ties() -> void:
+	assert_eq(_field.lowest_hp_slot(), 0, "all full: slot 0")
+	_field.damage(4, 3.0)
+	_field.damage(2, 3.0)
+	assert_eq(_field.lowest_hp_slot(), 2, "slots 2 and 4 tie at 7 hp")
+
+
+func test_lowest_hp_slot_skips_empty_slots() -> void:
+	_field.damage(0, 10.0)
+	_field.damage(3, 1.0)
+	assert_eq(_field.lowest_hp_slot(), 3, "empty slot 0 is not a target")
+
+
+func test_lowest_hp_slot_is_minus_one_when_every_slot_is_empty() -> void:
+	for slot: int in _field.slot_count():
+		_field.damage(slot, 10.0)
+	assert_eq(_field.lowest_hp_slot(), -1)
+
+
 ## Every slot's [has_block, hp, max_hp, gold], then destroyed_count.
 func _snapshot() -> Array:
 	var result: Array = []
