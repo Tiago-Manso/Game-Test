@@ -1,6 +1,6 @@
 ---
 name: implement-next
-description: Run one iteration of the autonomous implementation loop - resume an interrupted issue from its state logs, otherwise pick the next `ready` GitHub issue, implement it with TDD, review it in the pull request (quality, security, tests and performance reviewers until no Critical or Important issues remain, then an Opus general review and an Opus product-owner go/no-go) and merge it. Use when asked to "implement the next issue", "run the loop", or via `/loop /implement-next` or a scheduled task.
+description: Run one iteration of the autonomous implementation loop - resume an interrupted issue from its state logs, otherwise pick the next `ready` GitHub issue (or the one given as `#<n>`), implement it with TDD, review it in the pull request (quality, security, tests and performance reviewers until no Critical or Important issues remain, then an Opus general review and an Opus product-owner go/no-go) and merge it. Use when asked to "implement the next issue", "implement issue #n", "run the loop", or via `/loop /implement-next` or a scheduled task.
 ---
 
 # implement-next: one iteration of the autonomous loop
@@ -9,6 +9,14 @@ Each run takes **one issue from `ready` to merged** (or to a clean stop) and
 then ends. Repetition comes from outside: `/loop /implement-next` in a session,
 or a scheduled task whose prompt is `/implement-next`. Never start a second
 issue in the same run, and never run two loops at once.
+
+## Arguments
+
+- `/implement-next` - take the next issue the normal way (Step 3 picks it).
+- `/implement-next #<n>` (or just `<n>`) - **work only on issue `<n>`**. Use it
+  to run a single issue on demand. Run it without `/loop`: once the issue is
+  merged there is nothing left for it to do. The differences are in Steps 2
+  and 3, marked "Targeted run"; everything else is the same.
 
 The loop runs **without a human**. The only thing that ever waits for the user
 is spec refinement: an issue labelled `needs-spec`, which they answer with
@@ -188,6 +196,11 @@ behind, and read `.loop/issue-<n>/state.md`:
 
 Then carry on with the normal steps from there; skip Steps 3-5.
 
+**Targeted run (`#<n>`).** If the unfinished work is issue `<n>`, resume it as
+above. If it is a **different** issue, don't touch it and don't start `<n>`:
+stop and report "issue #<m> is still in progress - finish or resume it first",
+since only one issue may be in flight.
+
 ## Step 3 - Pick an issue
 
 List open issues labelled `ready` and **not** labelled `in-progress` or
@@ -201,6 +214,17 @@ issues closed. Don't comment on or relabel skipped issues.
 Take the first issue that isn't skipped. If none is left, report
 "backlog empty" (no `ready` issues) or "waiting on dependencies" (every
 `ready` issue waits on an open one - list which) and stop.
+
+**Targeted run (`#<n>`).** Don't search; check issue `<n>` instead and stop
+with the reason if any of these is true:
+
+- it is closed - "already done";
+- it is labelled `needs-spec` - "waiting for refinement: run `/refine-issue #<n>`";
+- it isn't labelled `ready` - "not ready: refine it first";
+- an issue it depends on is still open - "waiting on #<a>, #<b>".
+
+`priority:high` and the order of other issues don't matter. An issue labelled
+`retry` runs as attempt 2, as usual. Otherwise continue with Step 4 for `<n>`.
 
 ## Step 4 - Claim
 
