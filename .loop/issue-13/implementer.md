@@ -9,7 +9,7 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 ## Criteria
 | # | Criterion | Status | Red | Green |
 |---|-----------|--------|-----|-------|
-| 1 | check.sh exits 0 on head, names all four steps | red | (this commit) | - |
+| 1 | check.sh exits 0 on head, names all four steps | green | fcc4974 | (this commit) |
 | 2 | check.sh exits non-zero, names failing step | todo | - | - |
 | 3 | ci.yml valid YAML, triggers, job `checks`, steps | todo | - | - |
 | 4 | [manual] `checks` green on the PR | orchestrator | - | - |
@@ -19,4 +19,4 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 None yet.
 
 ## Last checks
-- tools tests: 1 failed (expected red: `AssertionError: 1 != 0 : check.sh: not implemented`)
+- tools tests: 1 passed; check.sh (import, lint, format, GUT) green
