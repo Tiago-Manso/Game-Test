@@ -52,3 +52,7 @@ func _spawn(slot: int) -> void:
 	_max_hp[slot] = _config.block_hp(destroyed_count)
 	_hp[slot] = _max_hp[slot]
 	_gold[slot] = _config.block_gold(destroyed_count)
+
+
+func damage(_slot: int, _amount: float) -> void:
+	pass
