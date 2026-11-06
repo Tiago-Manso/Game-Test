@@ -1,13 +1,13 @@
 Status: in progress
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: #22
-Stage: general-review-2
+Stage: po-r1
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews
-- [ ] general review
+- [x] general review
 - [ ] PO go / no-go
 - [ ] merged
 
@@ -34,12 +34,13 @@ Stage: general-review-2
 | 10 | performance | 2 | 2026-11-06 | done | performance-r2.md |
 | 11 | general | 1 | 2026-11-06 | done | general-r1.md |
 | 12 | implementer | fixes g1 | 2026-11-06 | done | implementer.md |
-| 13 | general | 2 | 2026-11-06 | started | general-r2.md |
+| 13 | general | 2 | 2026-11-06 | done | general-r2.md |
+| 14 | product-owner | 1 | 2026-11-06 | started | po-r1.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |
 |----|----------|----------|-------|--------|------------|
-| T1-I1 | tests | important | general (tools/tests not run by CI/check.sh/CLAUDE.md) | open | - |
+| T1-I1 | tests | important | general (tools/tests not run by CI/check.sh/CLAUDE.md) | deferred (accepted by tests r2): spec fixes ci.yml steps and the CLAUDE.md line; needs a follow-up spec | - |
 | Q1-m1 | quality | minor | general (tools/tests not run anywhere) | logged | - |
 | Q1-m2 | quality | minor | .github/workflows/ci.yml:14 | logged | - |
 | Q1-m3 | quality | minor | tools/check.sh:20 | logged | - |
@@ -56,6 +57,8 @@ Stage: general-review-2
 | S2-m1 | security | minor | .claude/skills/implement-next/SKILL.md:323 | logged | - |
 | G1-I1 | general | important | .claude/skills/implement-next/SKILL.md:322 | fixed | ec61318 |
 | G1-m1 | general | minor | .claude/skills/implement-next/SKILL.md:322 | logged | - |
+| G2-m1 | general | minor | .claude/skills/implement-next/SKILL.md:331 | logged | - |
+| G2-m2 | general | minor | .loop/issue-13/state.md (T1-I1 row said open) | fixed by orchestrator (record only) | this commit |
 
 ## Tech debt (Minor and deferred Important)
 - T1-I1 (important, deferred) general - tools/tests (test_ci_workflow, test_loop_docs) not run by CI or listed in CLAUDE.md; reason: spec fixes the ci.yml steps and the CLAUDE.md edit, so wiring them in needs a follow-up spec.
@@ -74,3 +77,4 @@ Stage: general-review-2
 - P1-m3 (minor) .github/workflows/ci.yml:20 - gdtoolkit pip-installed every run, not cached.
 - S2-m1 (minor) .claude/skills/implement-next/SKILL.md:323 - "wait for it" has no time limit and no rule for a missing `checks` run on the head SHA; cap the wait (~30 min) and treat timeout/no run as red or an environment stop.
 - G1-m1 (minor) .claude/skills/implement-next/SKILL.md:322 - "wait for it" doesn't say how to check the run; `gh pr checks` (GraphQL) 403s here; name the REST call `gh api repos/{owner}/{repo}/commits/<sha>/check-runs`.
+- G2-m1 (minor) .claude/skills/implement-next/SKILL.md:331 - first CI wait is now in item 4, after item 3 set state.md done/merged; a red run there leaves state.md saying merged; also require green checks in item 1 or reset state.md to in progress on red.
