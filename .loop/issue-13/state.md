@@ -1,12 +1,12 @@
 Status: in progress
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: #22
-Stage: review-round-2
+Stage: general-review-1
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
-- [ ] specialist reviews
+- [x] specialist reviews
 - [ ] general review
 - [ ] PO go / no-go
 - [ ] merged
@@ -14,10 +14,10 @@ Stage: review-round-2
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |
 |-------------|--------|---------------------|------|
-| quality     | 1      | 0                   | no   |
-| security    | 1      | 0                   | no   |
-| tests       | 1      | 1                   | no   |
-| performance | 1      | 0                   | no   |
+| quality     | 2      | 0                   | yes  |
+| security    | 2      | 0                   | yes  |
+| tests       | 2      | 0                   | yes  |
+| performance | 2      | 0                   | yes  |
 
 ## Agent runs
 | # | Agent | Round | Started (UTC) | Status | Log |
@@ -28,10 +28,11 @@ Stage: review-round-2
 | 4 | tests | 1 | 2026-11-06 | done | tests-r1.md |
 | 5 | performance | 1 | 2026-11-06 | done | performance-r1.md |
 | 6 | implementer | fixes r1 | 2026-11-06 | done | implementer.md |
-| 7 | quality | 2 | 2026-11-06 | started | quality-r2.md |
-| 8 | security | 2 | 2026-11-06 | started | security-r2.md |
-| 9 | tests | 2 | 2026-11-06 | started | tests-r2.md |
-| 10 | performance | 2 | 2026-11-06 | started | performance-r2.md |
+| 7 | quality | 2 | 2026-11-06 | done | quality-r2.md |
+| 8 | security | 2 | 2026-11-06 | done | security-r2.md |
+| 9 | tests | 2 | 2026-11-06 | done | tests-r2.md |
+| 10 | performance | 2 | 2026-11-06 | done | performance-r2.md |
+| 11 | general | 1 | 2026-11-06 | started | general-r1.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |
@@ -50,6 +51,7 @@ Stage: review-round-2
 | P1-m1 | performance | minor | .github/workflows/ci.yml:13 | logged | - |
 | P1-m2 | performance | minor | .github/workflows/ci.yml:16 | logged | - |
 | P1-m3 | performance | minor | .github/workflows/ci.yml:20 | logged | - |
+| S2-m1 | security | minor | .claude/skills/implement-next/SKILL.md:323 | logged | - |
 
 ## Tech debt (Minor and deferred Important)
 - T1-I1 (important, deferred) general - tools/tests (test_ci_workflow, test_loop_docs) not run by CI or listed in CLAUDE.md; reason: spec fixes the ci.yml steps and the CLAUDE.md edit, so wiring them in needs a follow-up spec.
@@ -66,3 +68,4 @@ Stage: review-round-2
 - P1-m1 (minor) .github/workflows/ci.yml:13 - no concurrency group; superseded PR runs waste minutes.
 - P1-m2 (minor) .github/workflows/ci.yml:16 - no timeout-minutes (dup of Q1-m2/S1-m3).
 - P1-m3 (minor) .github/workflows/ci.yml:20 - gdtoolkit pip-installed every run, not cached.
+- S2-m1 (minor) .claude/skills/implement-next/SKILL.md:323 - "wait for it" has no time limit and no rule for a missing `checks` run on the head SHA; cap the wait (~30 min) and treat timeout/no run as red or an environment stop.
