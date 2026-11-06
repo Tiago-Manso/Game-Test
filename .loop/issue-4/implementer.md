@@ -10,7 +10,7 @@ Branch: loop/issue-4-blocks-and-slots
 | 3 | Empty/invalid slot or amount <= 0: no change, no signal | green (no refactor needed) | 61c6a26 | bae1485 |
 | 4 | Respawn after exactly respawn_delay of tick, block_spawned, HP = block_hp(destroyed_count) | green (no refactor needed) | a1fae0e | 2c8cb60 |
 | 5 | lowest_hp_slot: lowest HP, lowest index on ties, -1 when empty | refactored | acc5a9f | 2b4bfe6 |
-| 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | todo | | |
+| 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | red | (this commit) | |
 | 7 | Field scene has no _process/_physics_process calling tick | todo | | |
 | - | Field added to the main scene (requirement) | todo | | |
 
@@ -30,3 +30,4 @@ Criterion 4 green: breaking sets the slot's countdown to respawn_delay; tick() i
 Criterion 5 red: stub returns -2 (no valid answer, so every case is red). Failures: "[-2] expected to equal [3]: slot 3 has 4 hp", "[-2] expected to equal [2]: slots 2 and 4 tie at 7 hp", "[-2] expected to equal [-1]". Empty-slot test guards against picking a broken slot (its stored hp is 0). Lint 0, format 0.
 Criterion 5 green: one pass over occupied slots, strict < keeps the lowest index on ties. Import 0, lint 0, format 0, tests exit 0 (50/50, 4378 asserts).
 Refactor (criteria 1-5): doc comments on destroyed_count, _init and the read accessors; no behaviour change. Import 0, lint 0, format 0, tests exit 0 (50/50, 4378 asserts).
+Criterion 6 red: stub scenes/field/field.tscn (root Control 'Field', script field.gd) with setup() doing nothing and block_count()/block_view()/hp_bar() accessors returning 0/null. Failures: "[0] expected to equal [5]: five block nodes" in all three tests (they stop there rather than null-deref). Lint 0, format 0.
