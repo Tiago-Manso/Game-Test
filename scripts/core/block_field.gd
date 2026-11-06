@@ -47,12 +47,20 @@ func gold(slot: int) -> float:
 	return _gold[slot]
 
 
+## Lowers the block's HP in `slot`; at HP <= 0 the block breaks.
+func damage(slot: int, amount: float) -> void:
+	_hp[slot] -= amount
+	if _hp[slot] > 0.0:
+		block_damaged.emit(slot, _hp[slot])
+		return
+	_occupied[slot] = false
+	_hp[slot] = 0.0
+	destroyed_count += 1
+	block_broken.emit(slot, _gold[slot])
+
+
 func _spawn(slot: int) -> void:
 	_occupied[slot] = true
 	_max_hp[slot] = _config.block_hp(destroyed_count)
 	_hp[slot] = _max_hp[slot]
 	_gold[slot] = _config.block_gold(destroyed_count)
-
-
-func damage(_slot: int, _amount: float) -> void:
-	pass
