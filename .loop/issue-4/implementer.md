@@ -10,7 +10,7 @@ Branch: loop/issue-4-blocks-and-slots
 | 3 | Empty/invalid slot or amount <= 0: no change, no signal | green (no refactor needed) | 61c6a26 | bae1485 |
 | 4 | Respawn after exactly respawn_delay of tick, block_spawned, HP = block_hp(destroyed_count) | green (no refactor needed) | a1fae0e | 2c8cb60 |
 | 5 | lowest_hp_slot: lowest HP, lowest index on ties, -1 when empty | refactored | acc5a9f | 2b4bfe6 |
-| 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | red | (this commit) | |
+| 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | green | 252ce42 | (this commit) |
 | 7 | Field scene has no _process/_physics_process calling tick | todo | | |
 | - | Field added to the main scene (requirement) | todo | | |
 
@@ -31,3 +31,4 @@ Criterion 5 red: stub returns -2 (no valid answer, so every case is red). Failur
 Criterion 5 green: one pass over occupied slots, strict < keeps the lowest index on ties. Import 0, lint 0, format 0, tests exit 0 (50/50, 4378 asserts).
 Refactor (criteria 1-5): doc comments on destroyed_count, _init and the read accessors; no behaviour change. Import 0, lint 0, format 0, tests exit 0 (50/50, 4378 asserts).
 Criterion 6 red: stub scenes/field/field.tscn (root Control 'Field', script field.gd) with setup() doing nothing and block_count()/block_view()/hp_bar() accessors returning 0/null. Failures: "[0] expected to equal [5]: five block nodes" in all three tests (they stop there rather than null-deref). Lint 0, format 0.
+Criterion 6 green: field.gd builds one fixed-size cell (ColorRect block + ProgressBar, step 0 so HP isn't rounded) per slot in rows of slots_per_row (3) inside the Rows VBoxContainer; hidden blocks keep their cell so others don't move. Bars update in block_damaged/block_broken/block_spawned handlers only. Throwaway layout check (not committed) at 540x480: slots 0-2 at y 94, slots 3-4 at y 252, centred. Import 0, lint 0, format 0, tests exit 0 (53/53, 4414 asserts).
