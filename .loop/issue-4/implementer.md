@@ -8,7 +8,7 @@ Branch: loop/issue-4-blocks-and-slots
 | 1 | New BlockField (default config): 5 blocks, HP 10, gold 1 | green (no refactor needed) | 9ee435a | e41c75a |
 | 2 | Damage below HP -> block_damaged; reaching 0 -> break, destroyed_count+1, block_broken once | green (no refactor needed) | 87f0d69 | 3f54b4d |
 | 3 | Empty/invalid slot or amount <= 0: no change, no signal | green (no refactor needed) | 61c6a26 | bae1485 |
-| 4 | Respawn after exactly respawn_delay of tick, block_spawned, HP = block_hp(destroyed_count) | red | (this commit) | |
+| 4 | Respawn after exactly respawn_delay of tick, block_spawned, HP = block_hp(destroyed_count) | green | a1fae0e | (this commit) |
 | 5 | lowest_hp_slot: lowest HP, lowest index on ties, -1 when empty | todo | | |
 | 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | todo | | |
 | 7 | Field scene has no _process/_physics_process calling tick | todo | | |
@@ -26,3 +26,4 @@ Criterion 2 green: damage() subtracts, emits block_damaged while HP > 0, otherwi
 Criterion 3 red: 3 failing tests. Empty slot: snapshot differs (destroyed_count 2 != 1), "Expected ... to NOT emit signal [block_broken]". Invalid slot: "invalid slot -1 has no block" (negative index wraps to slot 4) and out-of-bounds script errors for 5 and 100. Amount <= 0 / NaN: "Expected ... to NOT emit signal [block_damaged]", snapshot differs (0 damage then -INF... slot 0 broken). NaN added to the amounts since `amount <= 0` alone lets NaN through. Lint 0, format 0.
 Criterion 3 green: has_block() returns false outside the slot range; damage() returns early unless amount > 0 (rejects NaN) and the slot has a block. Import 0, lint 0, format 0, tests exit 0 (40/40, 4342 asserts).
 Criterion 4 red: tick() stub does nothing. Failures: "respawned after 0.5 s", "Expected the signal [block_spawned] emit count of [0] to equal [1]", "respawned on step 30", "[10.0] expected to equal [11.025]: max hp uses count 2". Extra tests cover uneven steps (0.49 + 0.01), 30 steps at 60 Hz, and non-positive/NaN delta. test_initial_destroyed_count_sets_the_first_blocks already passes (criterion 1's constructor reads the count); it pins the 'initial destroyed_count' requirement. Lint 0, format 0.
+Criterion 4 green: breaking sets the slot's countdown to respawn_delay; tick() ignores delta that isn't > 0, lowers each empty slot's countdown and spawns at <= TIME_EPSILON (1e-9) with block_spawned. Mutation check: TIME_EPSILON = 0 fails "respawned on step 30" and "respawned after 0.49 + 0.01 s" (float residue), so the epsilon is needed. Import 0, lint 0, format 0, tests exit 0 (46/46, 4373 asserts).

@@ -6,6 +6,10 @@ signal block_damaged(slot: int, hp: float)
 signal block_broken(slot: int, gold: float)
 signal block_spawned(slot: int)
 
+## Countdowns within this many seconds of zero count as done, so float steps
+## (e.g. 30 x 1/60 s) respawn on the step that reaches respawn_delay.
+const TIME_EPSILON: float = 1e-9
+
 var destroyed_count: int = 0
 
 var _config: BalanceConfig
@@ -13,6 +17,7 @@ var _occupied: Array[bool] = []
 var _hp: PackedFloat64Array = PackedFloat64Array()
 var _max_hp: PackedFloat64Array = PackedFloat64Array()
 var _gold: PackedFloat64Array = PackedFloat64Array()
+var _respawn_left: PackedFloat64Array = PackedFloat64Array()
 
 
 func _init(config: BalanceConfig, initial_destroyed_count: int = 0) -> void:
@@ -23,6 +28,7 @@ func _init(config: BalanceConfig, initial_destroyed_count: int = 0) -> void:
 	_hp.resize(count)
 	_max_hp.resize(count)
 	_gold.resize(count)
+	_respawn_left.resize(count)
 	for slot: int in count:
 		_spawn(slot)
 
@@ -59,8 +65,23 @@ func damage(slot: int, amount: float) -> void:
 		return
 	_occupied[slot] = false
 	_hp[slot] = 0.0
+	_respawn_left[slot] = _config.respawn_delay
 	destroyed_count += 1
 	block_broken.emit(slot, _gold[slot])
+
+
+## Advances every respawn countdown by `delta` seconds; a slot whose countdown
+## ends gets a new block. Only the simulation clock calls this (A-03).
+func tick(delta: float) -> void:
+	if not (delta > 0.0):
+		return
+	for slot: int in _occupied.size():
+		if _occupied[slot]:
+			continue
+		_respawn_left[slot] -= delta
+		if _respawn_left[slot] <= TIME_EPSILON:
+			_spawn(slot)
+			block_spawned.emit(slot)
 
 
 func _spawn(slot: int) -> void:
@@ -68,7 +89,3 @@ func _spawn(slot: int) -> void:
 	_max_hp[slot] = _config.block_hp(destroyed_count)
 	_hp[slot] = _max_hp[slot]
 	_gold[slot] = _config.block_gold(destroyed_count)
-
-
-func tick(_delta: float) -> void:
-	pass
