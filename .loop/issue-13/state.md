@@ -1,7 +1,7 @@
 Status: in progress
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: #22
-Stage: review-round-1-fixes
+Stage: review-round-2
 
 ## Stages
 - [x] claimed
@@ -27,6 +27,11 @@ Stage: review-round-1-fixes
 | 3 | security | 1 | 2026-11-06 | done | security-r1.md |
 | 4 | tests | 1 | 2026-11-06 | done | tests-r1.md |
 | 5 | performance | 1 | 2026-11-06 | done | performance-r1.md |
+| 6 | implementer | fixes r1 | 2026-11-06 | done | implementer.md |
+| 7 | quality | 2 | 2026-11-06 | started | quality-r2.md |
+| 8 | security | 2 | 2026-11-06 | started | security-r2.md |
+| 9 | tests | 2 | 2026-11-06 | started | tests-r2.md |
+| 10 | performance | 2 | 2026-11-06 | started | performance-r2.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |
@@ -47,6 +52,7 @@ Stage: review-round-1-fixes
 | P1-m3 | performance | minor | .github/workflows/ci.yml:20 | logged | - |
 
 ## Tech debt (Minor and deferred Important)
+- T1-I1 (important, deferred) general - tools/tests (test_ci_workflow, test_loop_docs) not run by CI or listed in CLAUDE.md; reason: spec fixes the ci.yml steps and the CLAUDE.md edit, so wiring them in needs a follow-up spec.
 - Q1-m1 (minor) general - tools/tests Python tests are not run by check.sh, CI or listed in CLAUDE.md; add a CI step for test_ci_workflow/test_loop_docs.
 - Q1-m2 (minor) .github/workflows/ci.yml:14 - no timeout-minutes on `checks`; add timeout-minutes: 20.
 - Q1-m3 (minor) tools/check.sh:20 - `godot --import` exits 0 on a scene with a missing ext_resource; CLAUDE.md claim "catches broken resources" is false; follow-up: a step that loads every .tscn/.tres headless.
