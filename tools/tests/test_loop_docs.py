@@ -32,6 +32,18 @@ class LoopDocs(unittest.TestCase):
         self.assertRegex(merge, r"(?i)succeeded")
         self.assertRegex(merge, r"(?i)implementer")
 
+    def test_checks_wait_covers_the_merged_head(self) -> None:
+        # The last push before merging is the state.md / PR body commit, so the
+        # wait for `checks` must come after it and before merge_pull_request.
+        merge = section(".claude/skills/implement-next/SKILL.md", "Step 10 - Merge")
+        last_push = merge.rfind("Commit, push")
+        wait = merge.find("`checks`")
+        merge_call = merge.find("merge_pull_request")
+        self.assertNotEqual(last_push, -1, "Step 10 no longer pushes state.md")
+        self.assertNotEqual(merge_call, -1, "Step 10 no longer calls merge_pull_request")
+        self.assertGreater(wait, last_push, "`checks` wait comes before the last push")
+        self.assertLess(wait, merge_call, "`checks` wait comes after merge_pull_request")
+
 
 if __name__ == "__main__":
     unittest.main()
