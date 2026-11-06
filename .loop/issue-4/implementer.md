@@ -15,7 +15,11 @@ Branch: loop/issue-4-blocks-and-slots
 | - | Field added to the main scene (requirement) | green | 37ca59d | 58f94c0 |
 
 ## Findings
-(none yet)
+Round 1: 0 blocking (Minors logged by the orchestrator, not fixed).
+Round 2: fixing T2-I1 (important). Minors Q1-m1..m3, S1-m1..m2, T1-m1..m2, Q2-m1, T2-m1 logged as tech debt, not fixed.
+| ID | Severity | Status | Commit | Notes |
+|----|----------|--------|--------|-------|
+| T2-I1 | important | fixed | (this commit, test only) | block_broken gold for a block spawned at a different count than the break count was untested. |
 
 ## Last checks
 Baseline: import 0, lint 0, format 0, tests exit 0 (33/33, 4287 asserts).
@@ -41,3 +45,4 @@ Final checks: import exit 0, lint exit 0, format check exit 0, tests exit 0 (55/
 
 ## Manual
 - Five blocks with HP bars readable at 540x960 and taller: needs Game (#5) to call Field.setup; until then the running game shows an empty field. Layout verified headless: 3 above 2, centred, 120 px blocks with 14 px bars.
+T2-I1: test-only gap, production code already correct, so no red commit. New test test_block_broken_carries_the_gold_set_when_the_block_spawned: breaks slot 0 (count -> 1), then slot 1 (spawned at count 0) and expects [1, block_gold(0)]; respawns slot 0 at count 2, breaks it and expects [0, block_gold(2)]. Mutation check: block_broken.emit(slot, _config.block_gold(destroyed_count - 1)) fails "ARRAY([1, 1.045]) != ARRAY([1, 1.0])"; restored. (assert_signal_emitted_with_parameters takes no message with an index in this GUT version, so the test reads get_signal_parameters(..., index) with assert_eq.) No earlier fixed findings to recheck. Checks: import exit 0, lint exit 0, format check exit 0, tests exit 0 (56/56, 4460 asserts).

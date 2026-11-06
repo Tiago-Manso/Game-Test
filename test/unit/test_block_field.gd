@@ -42,6 +42,24 @@ func test_damage_reaching_zero_breaks_the_block_once() -> void:
 	assert_signal_emit_count(_field, "block_damaged", 1, "only the first, non-breaking hit")
 
 
+func test_block_broken_carries_the_gold_set_when_the_block_spawned() -> void:
+	watch_signals(_field)
+	_field.damage(0, 10.0)
+	_field.damage(1, 10.0)
+	assert_eq(
+		get_signal_parameters(_field, "block_broken", 1),
+		[1, _config.block_gold(0)],
+		"slot 1 spawned at count 0 pays block_gold(0)"
+	)
+	_field.tick(0.5)
+	_field.damage(0, 1000.0)
+	assert_eq(
+		get_signal_parameters(_field, "block_broken", 2),
+		[0, _config.block_gold(2)],
+		"slot 0 respawned at count 2 pays block_gold(2)"
+	)
+
+
 func test_overkill_breaks_the_block_and_spares_the_others() -> void:
 	watch_signals(_field)
 	_field.damage(0, 1000.0)
