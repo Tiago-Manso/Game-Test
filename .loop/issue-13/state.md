@@ -1,15 +1,16 @@
-Status: in progress
+Status: done
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: #22
-Stage: po-r1
+Stage: merged
+Tech-debt issue: #24
 
 ## Stages
 - [x] claimed
 - [x] implemented (PR opened)
 - [x] specialist reviews
 - [x] general review
-- [ ] PO go / no-go
-- [ ] merged
+- [x] PO go / no-go
+- [x] merged
 
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |
@@ -35,7 +36,7 @@ Stage: po-r1
 | 11 | general | 1 | 2026-11-06 | done | general-r1.md |
 | 12 | implementer | fixes g1 | 2026-11-06 | done | implementer.md |
 | 13 | general | 2 | 2026-11-06 | done | general-r2.md |
-| 14 | product-owner | 1 | 2026-11-06 | started | po-r1.md |
+| 14 | product-owner | 1 | 2026-11-06 | done (GO) | po-r1.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |

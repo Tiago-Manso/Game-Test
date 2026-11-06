@@ -1,7 +1,7 @@
 # CI workflow
 
 - Issue: #13
-- Status: in-review
+- Status: done
 
 ## Context
 
