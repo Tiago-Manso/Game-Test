@@ -1,4 +1,4 @@
-Status: in progress
+Status: done
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots
 
@@ -36,3 +36,8 @@ Criterion 7: passes on first run - criterion 6's field.gd has no _process. Test 
 Main scene red: "Expected [<null>] to be anything but NULL: Main has a Field child". The test also checks the child is field.tscn and its anchor_bottom <= 0.5 (upper part). Lint 0, format 0.
 Main scene green: Field instanced in main.tscn, anchors full width, top 0 to 0.45 of the height. Nothing calls setup on it yet (Game arrives in #5), so the running game shows the field empty until then. The import's "ObjectDB instances leaked at exit" warning is pre-existing (same on 1bd95b6). Import 0, lint 0, format 0, tests exit 0 (55/55, 4458 asserts).
 Refactor (field scene): row gap comes from the block_spacing export instead of a duplicate 24 in field.tscn. Import 0, lint 0, format 0, tests exit 0 (55/55, 4458 asserts).
+Spec status not changed here: the orchestrator sets it (instruction for this run).
+Final checks: import exit 0, lint exit 0, format check exit 0, tests exit 0 (55/55, 4458 asserts).
+
+## Manual
+- Five blocks with HP bars readable at 540x960 and taller: needs Game (#5) to call Field.setup; until then the running game shows an empty field. Layout verified headless: 3 above 2, centred, 120 px blocks with 14 px bars.
