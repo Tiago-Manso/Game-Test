@@ -7,6 +7,7 @@ extends Control
 @export var block_size: Vector2 = Vector2(120.0, 120.0)
 @export var block_color: Color = Color(0.85, 0.45, 0.25)
 @export var hp_bar_height: float = 14.0
+## Gap in pixels between blocks, both within a row and between rows.
 @export var block_spacing: int = 24
 
 var _field: BlockField
@@ -41,6 +42,7 @@ func hp_bar(slot: int) -> ProgressBar:
 
 
 func _build_slots(count: int) -> void:
+	_rows.add_theme_constant_override("separation", block_spacing)
 	var row: HBoxContainer = null
 	for slot: int in count:
 		if slot % slots_per_row == 0:

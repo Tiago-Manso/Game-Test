@@ -10,9 +10,9 @@ Branch: loop/issue-4-blocks-and-slots
 | 3 | Empty/invalid slot or amount <= 0: no change, no signal | green (no refactor needed) | 61c6a26 | bae1485 |
 | 4 | Respawn after exactly respawn_delay of tick, block_spawned, HP = block_hp(destroyed_count) | green (no refactor needed) | a1fae0e | 2c8cb60 |
 | 5 | lowest_hp_slot: lowest HP, lowest index on ties, -1 when empty | refactored | acc5a9f | 2b4bfe6 |
-| 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | green (no refactor needed) | 252ce42 | e4b944d |
+| 6 | Integration: field scene shows 5 blocks with HP bars; damage updates bar; break hides until tick respawns | refactored | 252ce42 | e4b944d |
 | 7 | Field scene has no _process/_physics_process calling tick | green (no red possible) | - | (this commit, test only) |
-| - | Field added to the main scene (requirement) | green | 37ca59d | (this commit) |
+| - | Field added to the main scene (requirement) | green | 37ca59d | 58f94c0 |
 
 ## Findings
 (none yet)
@@ -35,3 +35,4 @@ Criterion 6 green: field.gd builds one fixed-size cell (ColorRect block + Progre
 Criterion 7: passes on first run - criterion 6's field.gd has no _process. Test checks every node of the instanced scene: not processing / physics-processing, script defines neither _process nor _physics_process, source has no ".tick(". Mutation check: adding `_physics_process(delta): _field.tick(delta)` fails "Field does not physics-process", "Field has no _physics_process", "Field never calls tick"; adding an empty _process fails "Field does not process" / "Field has no _process". Restored. Import 0, lint 0, format 0, tests exit 0 (54/54, 4455 asserts).
 Main scene red: "Expected [<null>] to be anything but NULL: Main has a Field child". The test also checks the child is field.tscn and its anchor_bottom <= 0.5 (upper part). Lint 0, format 0.
 Main scene green: Field instanced in main.tscn, anchors full width, top 0 to 0.45 of the height. Nothing calls setup on it yet (Game arrives in #5), so the running game shows the field empty until then. The import's "ObjectDB instances leaked at exit" warning is pre-existing (same on 1bd95b6). Import 0, lint 0, format 0, tests exit 0 (55/55, 4458 asserts).
+Refactor (field scene): row gap comes from the block_spacing export instead of a duplicate 24 in field.tscn. Import 0, lint 0, format 0, tests exit 0 (55/55, 4458 asserts).
