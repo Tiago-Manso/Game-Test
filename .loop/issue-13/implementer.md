@@ -22,7 +22,7 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 | ID | Severity | Outcome |
 |----|----------|---------|
 | T1-I1 | important | Deferred: nothing runs tools/tests automatically. Fixing it means adding a CI step and a CLAUDE.md command. The spec fixes the ci.yml steps (checkout, Python, install-godot.sh, check.sh) and the CLAUDE.md edit (only `tools/check.sh`), and this run must keep those edits to exactly the spec. Wiring tools/tests in needs a spec decision and belongs in a follow-up issue. |
-| G1-I1 | important | in progress: red test (`244 not greater than 1037 : checks wait comes before the last push`); wait moves to Step 10 item 4 |
+| G1-I1 | important | fixed: red f22a476 (`244 not greater than 1037 : checks wait comes before the last push`); the wait moved from Step 10 item 1 to item 4, after item 3's push and before merge_pull_request (fix: this commit). T1-I1 (deferred) not affected. |
 
 ## Last checks (head before this commit: 23e6b87)
 - import: pass
@@ -30,5 +30,6 @@ gdtoolkit): `python3 -m unittest discover -s tools/tests -v`. GUT can't run
 - format: pass (7 files unchanged)
 - GUT: 33/33 passed
 - tools/check.sh: exit 0, all four steps named
-- tools tests (`python3 -m unittest discover -s tools/tests`): 10/10 passed
+- tools tests (`python3 -m unittest discover -s tools/tests`): 11/11 passed (after G1-I1)
+- tools/check.sh after G1-I1: exit 0
 - [manual] `checks` workflow on the PR: for the orchestrator
