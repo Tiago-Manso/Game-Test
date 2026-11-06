@@ -1,7 +1,8 @@
-Status: in progress
+Status: done
 Issue: #4 Blocks and slots   Attempt: 1/2
 Branch: loop/issue-4-blocks-and-slots   PR: #23
-Stage: merging
+Tech-debt issue: #25
+Stage: merged
 
 ## Stages
 - [x] claimed
@@ -9,7 +10,7 @@ Stage: merging
 - [x] specialist reviews (quality/security/performance 2 rounds, tests 3 rounds; T2-I1 fixed)
 - [x] general review (1 round, 0 blocking)
 - [x] PO go / no-go (GO, round 1)
-- [ ] merged
+- [x] merged
 
 ## Specialist reviewers
 | Reviewer    | Rounds | Last round blocking | Done |

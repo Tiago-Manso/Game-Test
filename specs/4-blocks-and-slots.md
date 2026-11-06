@@ -1,7 +1,7 @@
 # Blocks and slots
 
 - Issue: #4
-- Status: in-review
+- Status: done
 
 ## Context
 
