@@ -1,11 +1,11 @@
 Status: in progress
 Issue: #13 CI workflow   Attempt: 1/2
 Branch: loop/issue-13-ci-workflow   PR: -
-Stage: claimed
+Stage: implemented
 
 ## Stages
 - [x] claimed
-- [ ] implemented (PR opened)
+- [x] implemented (PR opened)
 - [ ] specialist reviews
 - [ ] general review
 - [ ] PO go / no-go
@@ -22,7 +22,7 @@ Stage: claimed
 ## Agent runs
 | # | Agent | Round | Started (UTC) | Status | Log |
 |---|-------|-------|---------------|--------|-----|
-| 1 | implementer | - | 2026-11-06 | started | implementer.md |
+| 1 | implementer | - | 2026-11-06 | done | implementer.md |
 
 ## Findings
 | ID | Reviewer | Severity | Where | Status | Fix commit |
