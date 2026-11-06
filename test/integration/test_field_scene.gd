@@ -54,3 +54,24 @@ func test_broken_block_is_hidden_until_tick_respawns_it() -> void:
 	assert_true(_scene.hp_bar(0).is_visible_in_tree(), "hp bar 0 back after 0.5 s")
 	assert_eq(_scene.hp_bar(0).max_value, _config.block_hp(1), "bar max is the new block's hp")
 	assert_eq(_scene.hp_bar(0).value, _config.block_hp(1), "bar is full")
+
+
+func test_field_scene_never_advances_time_itself() -> void:
+	var nodes: Array[Node] = [_scene]
+	nodes.append_array(_scene.find_children("*", "", true, false))
+	for node: Node in nodes:
+		assert_false(node.is_processing(), "%s does not process" % node.name)
+		assert_false(node.is_physics_processing(), "%s does not physics-process" % node.name)
+		var script: Script = node.get_script() as Script
+		if script == null:
+			continue
+		var methods: Array[String] = []
+		for method: Dictionary in script.get_script_method_list():
+			methods.append(method["name"])
+		assert_does_not_have(methods, "_process", "%s has no _process" % node.name)
+		assert_does_not_have(methods, "_physics_process", "%s has no _physics_process" % node.name)
+		if script is GDScript:
+			assert_false(
+				(script as GDScript).source_code.contains(".tick("),
+				"%s never calls tick" % node.name
+			)
