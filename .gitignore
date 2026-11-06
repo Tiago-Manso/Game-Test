@@ -7,3 +7,6 @@ export_presets.cfg
 # Blender backups
 *.blend1
 *.blend2
+
+# Python bytecode (tools/tests)
+__pycache__/
