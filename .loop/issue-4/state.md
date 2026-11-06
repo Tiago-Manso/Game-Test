@@ -22,7 +22,7 @@ Stage: claimed
 ## Agent runs
 | # | Agent    | Round | Started (UTC)    | Status  | Log             |
 |---|----------|-------|------------------|---------|-----------------|
-| 1 | implementer | - | 2026-11-06 10:55 | started | implementer.md |
+| 1 | implementer | - | 2026-11-06 10:55 | done | implementer.md |
 
 ## Findings
 | ID      | Reviewer | Severity | Where            | Status   | Fix commit |
